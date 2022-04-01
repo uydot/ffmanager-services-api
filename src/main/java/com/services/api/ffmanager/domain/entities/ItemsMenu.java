@@ -1,6 +1,6 @@
 // Generated with g9.
 
-package com.services.api.ffmanager.entities;
+package com.services.api.ffmanager.domain.entities;
 
 import java.io.Serializable;
 import java.util.LinkedHashMap;

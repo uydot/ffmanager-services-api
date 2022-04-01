@@ -1,4 +1,4 @@
-package com.services.api.ffmanager.dto;
+package com.services.api.ffmanager.domain.dto;
 
 import java.time.LocalDateTime;
 import java.util.Set;
