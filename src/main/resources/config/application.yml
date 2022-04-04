@@ -8,16 +8,16 @@ spring:
       connection-timeout: 10000
       validation-timeout: 10000
       maximum-pool-size: 15
-    driver-class-name: com.ibm.db2.jcc.DB2Driver
-    url: jdbc:db2://t-db:50001/desa
-    username: rbermude
-    password: RBERMUDEZ
+    driver-class-name: org.hibernate.dialect.MySQL5InnoDBDialect
+    url: jdbc:mysql://localhost:3306/ffmanager?useSSL=false
+    username: root
+    password: admin1234
     tomcat:
       test-while-idle: true
       validation-query: SELECT 1
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: false
