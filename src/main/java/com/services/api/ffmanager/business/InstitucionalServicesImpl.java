@@ -1,6 +1,7 @@
 package com.services.api.ffmanager.business;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -55,9 +56,15 @@ public class InstitucionalServicesImpl implements InstitucionalServices {
 		datosInstitucionDeportivaRepository.delete(o);
 
 	}
+	
+	@Override
+	public Optional<DatosInstitucionDeportiva> getOneDatosInstitucionDeportiva(String id) {
+		return datosInstitucionDeportivaRepository.findById(Long.parseLong(id));
+		
+	}
 
 	@Override
-	public Collection<DatosInstitucionDeportiva> getDatosInstitucionDeportiva() {
+	public Collection<DatosInstitucionDeportiva> getAllDatosInstitucionDeportiva() {
 		return datosInstitucionDeportivaRepository.findAll();
 	}
 	

@@ -1,6 +1,7 @@
 package com.services.api.ffmanager.business;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import com.services.api.ffmanager.domain.entities.Areas;
 import com.services.api.ffmanager.domain.entities.Complejos;
@@ -13,7 +14,8 @@ public interface InstitucionalServices {
 	public abstract void createDatosInstitucionDeportiva(DatosInstitucionDeportiva o);
 	public abstract void updateDatosInstitucionDeportiva(DatosInstitucionDeportiva o);
 	public abstract void deleteDatosInstitucionDeportiva(DatosInstitucionDeportiva o);
-	public Collection<DatosInstitucionDeportiva> getDatosInstitucionDeportiva();
+	public abstract Optional<DatosInstitucionDeportiva> getOneDatosInstitucionDeportiva(String id);
+	public Collection<DatosInstitucionDeportiva> getAllDatosInstitucionDeportiva();
 	
 	public abstract void createComplejos(Complejos o);
 	public abstract void updateComplejos(Complejos o);
