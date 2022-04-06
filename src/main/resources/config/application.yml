@@ -22,7 +22,7 @@ spring:
       hibernate:
         format_sql: false
     show-sql: false
-
+    
 server:
   servlet:
     context-path: /ffmanager

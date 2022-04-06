@@ -17,8 +17,9 @@ public class MaterialesDTO {
 	private String nombre;
 	@JsonProperty("stock")
 	private int stock;
-	@JsonProperty("idItemMenu")
+	@JsonProperty("maximoPorDia")
 	private int maximoPorDia;
-	@JsonProperty("idItemMenu")
+	@JsonProperty("observaciones")
 	private String observaciones;
+
 }

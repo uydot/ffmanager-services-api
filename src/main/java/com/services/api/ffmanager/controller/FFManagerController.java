@@ -49,11 +49,6 @@ public class FFManagerController {
 	/**
 	 * Rest para Datos Institucion Deportiva
 	 */
-
-	@GetMapping(value = "/ex")
-	public String getFoosBySimplePath() {
-	    return "Get some Foos";
-	}
 	
 	@GetMapping(value = "/instituciones-deportivas/get-all")
 	public ResponseEntity<Object> getAllInstitucionesDeportivas() {
