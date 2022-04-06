@@ -8,7 +8,7 @@ spring:
       connection-timeout: 10000
       validation-timeout: 10000
       maximum-pool-size: 15
-    driver-class-name: org.hibernate.dialect.MySQL5InnoDBDialect
+    driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/ffmanager?useSSL=false
     username: root
     password: admin1234
@@ -25,7 +25,8 @@ spring:
 
 server:
   servlet:
-    context-path: /servicios
+    context-path: /ffmanager
+  port : 8085
 
 logging:
 #  config: ./config/logback.xml

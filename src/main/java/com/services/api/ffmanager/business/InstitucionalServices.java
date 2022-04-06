@@ -20,21 +20,25 @@ public interface InstitucionalServices {
 	public abstract void createComplejos(Complejos o);
 	public abstract void updateComplejos(Complejos o);
 	public abstract void deleteComplejos(Complejos o);
-	public Collection<Complejos> getComplejos();
+	public abstract Optional<Complejos> getOneComplejos(String id);
+	public Collection<Complejos> getAllComplejos();
 	
 	public abstract void createAreas(Areas o);
 	public abstract void updateAreas(Areas o);
 	public abstract void deleteAreas(Areas o);
-	public Collection<Areas> getAreas();
+	public abstract Optional<Areas> getOneAreas(String id);
+	public Collection<Areas> getAllAreas();
 	
 	public abstract void createTiposAreas(TiposAreas o);
 	public abstract void updateTiposAreas(TiposAreas o);
 	public abstract void deleteTiposAreas(TiposAreas o);
-	public Collection<TiposAreas> getTiposAreas();
+	public abstract Optional<TiposAreas> getOneTiposAreas(String id);
+	public Collection<TiposAreas> getAllTiposAreas();
 	
 	public abstract void createSectores(Sectores o);
 	public abstract void updateSectores(Sectores o);
 	public abstract void deleteSectores(Sectores o);
-	public Collection<Sectores> getSectores();
+	public abstract Optional<Sectores> getOneSectores(String id);
+	public Collection<Sectores> getAllSectores();
 	
 }

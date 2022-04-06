@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.services.api.ffmanager.domain.entities.Areas;
 import com.services.api.ffmanager.domain.entities.Complejos;
@@ -16,6 +17,7 @@ import com.services.api.ffmanager.domain.repository.DatosInstitucionDeportivaRep
 import com.services.api.ffmanager.domain.repository.SectoresRepository;
 import com.services.api.ffmanager.domain.repository.TiposAreasRepository;
 
+@Service
 public class InstitucionalServicesImpl implements InstitucionalServices {
 
 	protected final DatosInstitucionDeportivaRepository datosInstitucionDeportivaRepository;
@@ -88,9 +90,14 @@ public class InstitucionalServicesImpl implements InstitucionalServices {
 		complejosRepository.delete(o);
 
 	}
+	
+	@Override
+	public Optional<Complejos> getOneComplejos(String id) {
+		return complejosRepository.findById(Long.parseLong(id));
+	}
 
 	@Override
-	public Collection<Complejos> getComplejos() {
+	public Collection<Complejos> getAllComplejos() {
 		return complejosRepository.findAll();
 	
 	}
@@ -117,7 +124,12 @@ public class InstitucionalServicesImpl implements InstitucionalServices {
 	}
 
 	@Override
-	public Collection<Areas> getAreas() {
+	public Optional<Areas> getOneAreas(String id) {
+		return areasRepository.findById(Long.parseLong(id));
+	}
+
+	@Override
+	public Collection<Areas> getAllAreas() {
 		return areasRepository.findAll();
 	}
 
@@ -141,9 +153,14 @@ public class InstitucionalServicesImpl implements InstitucionalServices {
 		tiposAreasRepository.delete(o);
 
 	}
+	
+	@Override
+	public Optional<TiposAreas> getOneTiposAreas(String id) {
+		return tiposAreasRepository.findById(Long.parseLong(id));
+	}
 
 	@Override
-	public Collection<TiposAreas> getTiposAreas() {
+	public Collection<TiposAreas> getAllTiposAreas() {
 		return tiposAreasRepository.findAll();
 	}
 
@@ -169,7 +186,12 @@ public class InstitucionalServicesImpl implements InstitucionalServices {
 	}
 
 	@Override
-	public Collection<Sectores> getSectores() {
+	public Optional<Sectores> getOneSectores(String id) {
+		return sectoresRepository.findById(Long.parseLong(id));
+	}
+	
+	@Override
+	public Collection<Sectores> getAllSectores() {
 		return sectoresRepository.findAll();
 	}
 
