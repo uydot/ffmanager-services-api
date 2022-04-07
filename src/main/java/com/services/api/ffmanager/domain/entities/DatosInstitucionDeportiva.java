@@ -3,49 +3,23 @@
 package com.services.api.ffmanager.domain.entities;
 
 import java.io.Serializable;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.Version;
 
 @Entity(name="datos_institucion_deportiva")
 public class DatosInstitucionDeportiva implements Serializable {
 
-    /** Primary key. */
-    protected static final String PK = "idDatosInstitucionDeportiva";
-
-    /**
-     * The optimistic lock. Available via standard bean get/set operations.
-     */
-    @Version
-    @Column(name="LOCK_FLAG")
-    private Integer lockFlag;
-
-    /**
-     * Access method for the lockFlag property.
-     *
-     * @return the current value of the lockFlag property
-     */
-    public Integer getLockFlag() {
-        return lockFlag;
-    }
-
-    /**
-     * Sets the value of the lockFlag property.
-     *
-     * @param aLockFlag the new value of the lockFlag property
-     */
-    public void setLockFlag(Integer aLockFlag) {
-        lockFlag = aLockFlag;
-    }
+   
 
     @Id
     @Column(name="id_datos_institucion_deportiva", unique=true, nullable=false, precision=10)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idDatosInstitucionDeportiva;
     @Column(nullable=false, length=100)
     private String nombre;
@@ -171,37 +145,8 @@ public class DatosInstitucionDeportiva implements Serializable {
         complejos = aComplejos;
     }
 
-    /**
-     * Compares the key for this instance with another DatosInstitucionDeportiva.
-     *
-     * @param other The object to compare to
-     * @return True if other object is instance of class DatosInstitucionDeportiva and the key objects are equal
-     */
-    private boolean equalKeys(Object other) {
-        if (this==other) {
-            return true;
-        }
-        if (!(other instanceof DatosInstitucionDeportiva)) {
-            return false;
-        }
-        DatosInstitucionDeportiva that = (DatosInstitucionDeportiva) other;
-        if (this.getIdDatosInstitucionDeportiva() != that.getIdDatosInstitucionDeportiva()) {
-            return false;
-        }
-        return true;
-    }
+   
 
-    /**
-     * Compares this instance with another DatosInstitucionDeportiva.
-     *
-     * @param other The object to compare to
-     * @return True if the objects are the same
-     */
-    @Override
-    public boolean equals(Object other) {
-        if (!(other instanceof DatosInstitucionDeportiva)) return false;
-        return this.equalKeys(other) && ((DatosInstitucionDeportiva)other).equalKeys(this);
-    }
 
     /**
      * Returns a hash code for this instance.
@@ -217,28 +162,8 @@ public class DatosInstitucionDeportiva implements Serializable {
         return result;
     }
 
-    /**
-     * Returns a debug-friendly String representation of this instance.
-     *
-     * @return String representation of this instance
-     */
-    @Override
-    public String toString() {
-        StringBuffer sb = new StringBuffer("[DatosInstitucionDeportiva |");
-        sb.append(" idDatosInstitucionDeportiva=").append(getIdDatosInstitucionDeportiva());
-        sb.append("]");
-        return sb.toString();
-    }
+    
 
-    /**
-     * Return all elements of the primary key.
-     *
-     * @return Map of key names to values
-     */
-    public Map<String, Object> getPrimaryKey() {
-        Map<String, Object> ret = new LinkedHashMap<String, Object>(6);
-        ret.put("idDatosInstitucionDeportiva", Integer.valueOf(getIdDatosInstitucionDeportiva()));
-        return ret;
-    }
+   
 
 }

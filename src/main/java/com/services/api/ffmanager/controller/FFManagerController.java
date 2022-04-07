@@ -64,7 +64,8 @@ public class FFManagerController {
 
 	@PostMapping(value = "/instituciones-deportivas/create")
 	public ResponseEntity<Object> createDatosInstitucionDeportiva(@RequestBody DatosInstitucionDeportivaDTO dto) {
-
+		DatosInstitucionDeportiva d = mapper.map(dto, DatosInstitucionDeportiva.class);
+		
 		institucionalServices.createDatosInstitucionDeportiva(mapper.map(dto, DatosInstitucionDeportiva.class));
 		return new ResponseEntity<>("Institucion Deportiva is updated successsfully", HttpStatus.OK);
 	}
