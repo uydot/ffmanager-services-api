@@ -1,5 +1,7 @@
 package com.services.api.ffmanager.domain.dto;
 
+import java.util.Set;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
@@ -21,5 +23,7 @@ public class DatosInstitucionDeportivaDTO {
 	private String direccion;
 	@JsonProperty("telefonoContacto")
 	private String telefonoContacto;
+	@JsonProperty("complejos")
+	private Set<ComplejosDTO> complejos;
 
 }

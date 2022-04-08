@@ -61,7 +61,7 @@ public class InstitucionalServicesImpl implements InstitucionalServices {
 	
 	@Override
 	public Optional<DatosInstitucionDeportiva> getOneDatosInstitucionDeportiva(String id) {
-		return datosInstitucionDeportivaRepository.findById(Long.parseLong(id));
+		return datosInstitucionDeportivaRepository.findById(Integer.parseInt(id));
 		
 	}
 
@@ -93,7 +93,7 @@ public class InstitucionalServicesImpl implements InstitucionalServices {
 	
 	@Override
 	public Optional<Complejos> getOneComplejos(String id) {
-		return complejosRepository.findById(Long.parseLong(id));
+		return complejosRepository.findById(Integer.parseInt(id));
 	}
 
 	@Override
@@ -125,7 +125,7 @@ public class InstitucionalServicesImpl implements InstitucionalServices {
 
 	@Override
 	public Optional<Areas> getOneAreas(String id) {
-		return areasRepository.findById(Long.parseLong(id));
+		return areasRepository.findById(Integer.parseInt(id));
 	}
 
 	@Override
@@ -156,7 +156,7 @@ public class InstitucionalServicesImpl implements InstitucionalServices {
 	
 	@Override
 	public Optional<TiposAreas> getOneTiposAreas(String id) {
-		return tiposAreasRepository.findById(Long.parseLong(id));
+		return tiposAreasRepository.findById(Integer.parseInt(id));
 	}
 
 	@Override
@@ -187,7 +187,7 @@ public class InstitucionalServicesImpl implements InstitucionalServices {
 
 	@Override
 	public Optional<Sectores> getOneSectores(String id) {
-		return sectoresRepository.findById(Long.parseLong(id));
+		return sectoresRepository.findById(Integer.parseInt(id));
 	}
 	
 	@Override

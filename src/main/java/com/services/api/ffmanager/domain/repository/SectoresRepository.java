@@ -4,6 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.services.api.ffmanager.domain.entities.Sectores;
 
-public interface SectoresRepository extends JpaRepository<Sectores, Long> {
+public interface SectoresRepository extends JpaRepository<Sectores, Integer> {
 
 }

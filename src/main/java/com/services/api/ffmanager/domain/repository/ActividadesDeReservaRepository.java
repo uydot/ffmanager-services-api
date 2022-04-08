@@ -4,6 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.services.api.ffmanager.domain.entities.ActividadesDeReserva;
 
-public interface ActividadesDeReservaRepository extends JpaRepository<ActividadesDeReserva, Long>{
+public interface ActividadesDeReservaRepository extends JpaRepository<ActividadesDeReserva, Integer>{
 
 }

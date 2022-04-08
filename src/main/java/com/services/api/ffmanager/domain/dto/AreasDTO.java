@@ -3,7 +3,6 @@ package com.services.api.ffmanager.domain.dto;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.services.api.ffmanager.domain.entities.Complejos;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -22,8 +21,8 @@ public class AreasDTO {
 	private String observaciones;
 	@JsonProperty("tiposAreasDTO")
 	private TiposAreasDTO tiposAreasDTO;
-	@JsonProperty("complejosDTO")
-	private ComplejosDTO complejos;
+//	@JsonProperty("complejosDTO")
+//	private ComplejosDTO complejos;
 	@JsonProperty("sectores")
 	private Set<SectoresDTO> sectores;
 }

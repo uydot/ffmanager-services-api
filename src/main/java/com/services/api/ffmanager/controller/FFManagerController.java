@@ -1,5 +1,9 @@
 package com.services.api.ffmanager.controller;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -52,7 +56,16 @@ public class FFManagerController {
 	
 	@GetMapping(value = "/instituciones-deportivas/get-all")
 	public ResponseEntity<Object> getAllInstitucionesDeportivas() {
-		return new ResponseEntity<>(institucionalServices.getAllDatosInstitucionDeportiva(), HttpStatus.OK);
+		
+		Collection<DatosInstitucionDeportiva> datos = institucionalServices.getAllDatosInstitucionDeportiva();	
+		List<DatosInstitucionDeportivaDTO> listaDatosDTO = new ArrayList<DatosInstitucionDeportivaDTO>();
+		for (DatosInstitucionDeportiva datosInstitucionDeportiva : datos) {
+			DatosInstitucionDeportivaDTO datosDTO = mapper.map(datosInstitucionDeportiva,  DatosInstitucionDeportivaDTO.class);
+			listaDatosDTO.add(datosDTO);
+		}
+		
+		
+		return new ResponseEntity<>(listaDatosDTO, HttpStatus.OK);
 	}
 
 	@GetMapping(value = "/instituciones-deportivas/get-one/{id}")
@@ -64,8 +77,6 @@ public class FFManagerController {
 
 	@PostMapping(value = "/instituciones-deportivas/create")
 	public ResponseEntity<Object> createDatosInstitucionDeportiva(@RequestBody DatosInstitucionDeportivaDTO dto) {
-		DatosInstitucionDeportiva d = mapper.map(dto, DatosInstitucionDeportiva.class);
-		
 		institucionalServices.createDatosInstitucionDeportiva(mapper.map(dto, DatosInstitucionDeportiva.class));
 		return new ResponseEntity<>("Institucion Deportiva is updated successsfully", HttpStatus.OK);
 	}
@@ -90,12 +101,18 @@ public class FFManagerController {
 	 * REST para Complejos Deportivos
 	 */
 
-	@RequestMapping(value = "/complejos/get-all")
+	@RequestMapping(value = "/complejos/get-all",  method = RequestMethod.GET)
 	public ResponseEntity<Object> getAllComplejos() {
-		return new ResponseEntity<>(institucionalServices.getAllComplejos(), HttpStatus.OK);
+		Collection<Complejos> datos = institucionalServices.getAllComplejos();	
+		List<ComplejosDTO> listaDatosDTO = new ArrayList<ComplejosDTO>();
+		for (Complejos complejo : datos) {
+			ComplejosDTO datosDTO = mapper.map(complejo,  ComplejosDTO.class);
+			listaDatosDTO.add(datosDTO);
+		}
+		return new ResponseEntity<>(listaDatosDTO, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/complejos/get-one/{id}")
+	@RequestMapping(value = "/complejos/get-one/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Object> getOneComplejps(@PathVariable("id") String id) {
 		var val = institucionalServices.getOneComplejos(id);
 		return new ResponseEntity<>(val.isPresent() ? mapper.map(val.get(), ComplejosDTO.class) : null,
@@ -127,12 +144,18 @@ public class FFManagerController {
 	 * REST para Areas Deportivas
 	 */
 
-	@RequestMapping(value = "/areas/get-all")
+	@RequestMapping(value = "/areas/get-all", method = RequestMethod.GET)
 	public ResponseEntity<Object> getAllAreas() {
-		return new ResponseEntity<>(institucionalServices.getAllAreas(), HttpStatus.OK);
+		Collection<Areas> datos = institucionalServices.getAllAreas();	
+		List<AreasDTO> listaDatosDTO = new ArrayList<AreasDTO>();
+		for (Areas area : datos) {
+			AreasDTO datosDTO = mapper.map(area,  AreasDTO.class);
+			listaDatosDTO.add(datosDTO);
+		}
+		return new ResponseEntity<>(listaDatosDTO, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/areas/get-one/{id}")
+	@RequestMapping(value = "/areas/get-one/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Object> getOneAreas(@PathVariable("id") String id) {
 		var val = institucionalServices.getOneAreas(id);
 		return new ResponseEntity<>(val.isPresent() ? mapper.map(val.get(), AreasDTO.class) : null,
@@ -164,15 +187,21 @@ public class FFManagerController {
 	 * REST para Tipos de Areas Deportivas
 	 */
 
-	@RequestMapping(value = "/tipos-areas/get-all")
+	@RequestMapping(value = "/tipos-areas/get-all", method = RequestMethod.GET)
 	public ResponseEntity<Object> getAllTiposAreas() {
-		return new ResponseEntity<>(institucionalServices.getAllTiposAreas(), HttpStatus.OK);
+		Collection<TiposAreas> datos = institucionalServices.getAllTiposAreas();	
+		List<TiposAreasDTO> listaDatosDTO = new ArrayList<TiposAreasDTO>();
+		for (TiposAreas tipoArea : datos) {
+			TiposAreasDTO datosDTO = mapper.map(tipoArea,  TiposAreasDTO.class);
+			listaDatosDTO.add(datosDTO);
+		}
+		return new ResponseEntity<>(listaDatosDTO, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/tipos-areas/get-one/{id}")
+	@RequestMapping(value = "/tipos-areas/get-one/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Object> getOneTiposAreas(@PathVariable("id") String id) {
 		var val = institucionalServices.getOneTiposAreas(id);
-		return new ResponseEntity<>(val.isPresent() ? mapper.map(val.get(), TiposAreas.class) : null,
+		return new ResponseEntity<>(val.isPresent() ? mapper.map(val.get(), TiposAreasDTO.class) : null,
 				val.isPresent() ? HttpStatus.OK : HttpStatus.NOT_FOUND);
 	}
 
@@ -201,12 +230,18 @@ public class FFManagerController {
 	 * REST para Sectores Deportivos
 	 */
 
-	@RequestMapping(value = "/sectores/get-all")
+	@RequestMapping(value = "/sectores/get-all", method = RequestMethod.GET)
 	public ResponseEntity<Object> getAllSectores() {
-		return new ResponseEntity<>(institucionalServices.getAllSectores(), HttpStatus.OK);
+		Collection<Sectores> datos = institucionalServices.getAllSectores();	
+		List<SectoresDTO> listaDatosDTO = new ArrayList<SectoresDTO>();
+		for (Sectores sector : datos) {
+			SectoresDTO datosDTO = mapper.map(sector,  SectoresDTO.class);
+			listaDatosDTO.add(datosDTO);
+		}
+		return new ResponseEntity<>(listaDatosDTO, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/sectores/get-one/{id}")
+	@RequestMapping(value = "/sectores/get-one/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Object> getOneSectores(@PathVariable("id") String id) {
 		var val = institucionalServices.getOneSectores(id);
 		return new ResponseEntity<>(val.isPresent() ? mapper.map(val.get(), SectoresDTO.class) : null,

@@ -3,8 +3,6 @@
 package com.services.api.ffmanager.domain.entities;
 
 import java.io.Serializable;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -17,7 +15,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Version;
 
 @Entity
 @Table(name="areas", indexes={@Index(name="areas_NOMBRE_IX", columnList="NOMBRE", unique=true)})

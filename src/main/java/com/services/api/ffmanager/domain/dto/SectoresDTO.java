@@ -1,7 +1,5 @@
 package com.services.api.ffmanager.domain.dto;
 
-import java.util.Set;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
@@ -25,8 +23,8 @@ public class SectoresDTO {
 	private boolean esSectorGolero;
 	@JsonProperty("numeroSector")
 	private int numeroSector;
-	@JsonProperty("estadosDeSectores")
-	private Set<EstadosDeSectoresDTO> estadosDeSectores;
-	@JsonProperty("reservaDeSector")
-	private Set<ReservaDeSectorDTO> reservaDeSector;
+//	@JsonProperty("estadosDeSectores")
+//	private Set<EstadosDeSectoresDTO> estadosDeSectores;
+//	@JsonProperty("reservaDeSector")
+//	private Set<ReservaDeSectorDTO> reservaDeSector;
 }

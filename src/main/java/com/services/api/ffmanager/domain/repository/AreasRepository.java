@@ -4,6 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.services.api.ffmanager.domain.entities.Areas;
 
-public interface AreasRepository extends JpaRepository<Areas, Long> {
+public interface AreasRepository extends JpaRepository<Areas, Integer> {
 
 }
