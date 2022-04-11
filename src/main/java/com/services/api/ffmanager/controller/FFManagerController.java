@@ -3,8 +3,11 @@ package com.services.api.ffmanager.controller;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
+import org.modelmapper.TypeMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,9 +19,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.services.api.ffmanager.business.InstitucionalServices;
 import com.services.api.ffmanager.domain.dto.AreasDTO;
 import com.services.api.ffmanager.domain.dto.ComplejosDTO;
@@ -49,22 +53,21 @@ public class FFManagerController {
 		this.institucionalServices = institucionalServices;
 		this.mapper = mapper;
 	}
-	
+
 	/**
 	 * Rest para Datos Institucion Deportiva
 	 */
-	
+
 	@GetMapping(value = "/instituciones-deportivas/get-all")
 	public ResponseEntity<Object> getAllInstitucionesDeportivas() {
-		
-		Collection<DatosInstitucionDeportiva> datos = institucionalServices.getAllDatosInstitucionDeportiva();	
+
+		Collection<DatosInstitucionDeportiva> datos = institucionalServices.getAllDatosInstitucionDeportiva();
 		List<DatosInstitucionDeportivaDTO> listaDatosDTO = new ArrayList<DatosInstitucionDeportivaDTO>();
 		for (DatosInstitucionDeportiva datosInstitucionDeportiva : datos) {
-			DatosInstitucionDeportivaDTO datosDTO = mapper.map(datosInstitucionDeportiva,  DatosInstitucionDeportivaDTO.class);
+			DatosInstitucionDeportivaDTO datosDTO = mapper.map(datosInstitucionDeportiva,
+					DatosInstitucionDeportivaDTO.class);
 			listaDatosDTO.add(datosDTO);
 		}
-		
-		
 		return new ResponseEntity<>(listaDatosDTO, HttpStatus.OK);
 	}
 
@@ -90,23 +93,35 @@ public class FFManagerController {
 	}
 
 	@RequestMapping(value = "/instituciones-deportivas/delete/{id}", method = RequestMethod.DELETE)
-	public ResponseEntity<Object> deleteDatosInstitucionDeportiva(@PathVariable("id") String id,
-			@RequestBody DatosInstitucionDeportivaDTO dto) {
+	public ResponseEntity<Object> deleteDatosInstitucionDeportiva(@PathVariable("id") String id) {
+		var val = institucionalServices.getOneDatosInstitucionDeportiva(id);
+		if (val.isPresent()) {
+			institucionalServices.deleteDatosInstitucionDeportiva(val.get());
+			return new ResponseEntity<>("Datos Institucion Deportiva is deleted successsfully", HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>("Datos Institucion Deportiva is not deleted", HttpStatus.NOT_FOUND);
+		}
 
-		institucionalServices.updateDatosInstitucionDeportiva(mapper.map(dto, DatosInstitucionDeportiva.class));
-		return new ResponseEntity<>("Datos Institucion Deportiva is deleted successsfully", HttpStatus.OK);
 	}
 
 	/**
 	 * REST para Complejos Deportivos
 	 */
 
-	@RequestMapping(value = "/complejos/get-all",  method = RequestMethod.GET)
+	@RequestMapping(value = "/complejos/get-all", method = RequestMethod.GET)
 	public ResponseEntity<Object> getAllComplejos() {
-		Collection<Complejos> datos = institucionalServices.getAllComplejos();	
+		Collection<Complejos> datos = institucionalServices.getAllComplejos();
 		List<ComplejosDTO> listaDatosDTO = new ArrayList<ComplejosDTO>();
 		for (Complejos complejo : datos) {
-			ComplejosDTO datosDTO = mapper.map(complejo,  ComplejosDTO.class);
+			ComplejosDTO datosDTO = mapper.map(complejo, ComplejosDTO.class);
+
+			var val = institucionalServices.getOneDatosInstitucionDeportiva(
+					"" + complejo.getDatosInstitucionDeportiva().getIdDatosInstitucionDeportiva());
+			DatosInstitucionDeportivaDTO diDTO = val.isPresent()
+					? mapper.map(val.get(), DatosInstitucionDeportivaDTO.class)
+					: null;
+			datosDTO.setDatosInstitucionDeportivaDTO(diDTO);
+
 			listaDatosDTO.add(datosDTO);
 		}
 		return new ResponseEntity<>(listaDatosDTO, HttpStatus.OK);
@@ -115,8 +130,20 @@ public class FFManagerController {
 	@RequestMapping(value = "/complejos/get-one/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Object> getOneComplejps(@PathVariable("id") String id) {
 		var val = institucionalServices.getOneComplejos(id);
-		return new ResponseEntity<>(val.isPresent() ? mapper.map(val.get(), ComplejosDTO.class) : null,
-				val.isPresent() ? HttpStatus.OK : HttpStatus.NOT_FOUND);
+		if (val.isPresent()) {
+			ComplejosDTO cDTO = mapper.map(val.get(), ComplejosDTO.class);
+
+			var val2 = institucionalServices.getOneDatosInstitucionDeportiva(
+					"" + val.get().getDatosInstitucionDeportiva().getIdDatosInstitucionDeportiva());
+			DatosInstitucionDeportivaDTO diDTO = val2.isPresent()
+					? mapper.map(val2.get(), DatosInstitucionDeportivaDTO.class)
+					: null;
+			cDTO.setDatosInstitucionDeportivaDTO(diDTO);
+			return new ResponseEntity<>(cDTO, HttpStatus.OK);
+
+		}
+
+		return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
 	}
 
 	@RequestMapping(value = "/complejos/create", method = RequestMethod.POST)
@@ -134,10 +161,14 @@ public class FFManagerController {
 	}
 
 	@RequestMapping(value = "/complejos/delete/{id}", method = RequestMethod.DELETE)
-	public ResponseEntity<Object> deleteComplejos(@PathVariable("id") String id, @RequestBody ComplejosDTO dto) {
-
-		institucionalServices.deleteComplejos(mapper.map(dto, Complejos.class));
-		return new ResponseEntity<>("Complejo is deleted successsfully", HttpStatus.OK);
+	public ResponseEntity<Object> deleteComplejos(@PathVariable("id") String id) {
+		var val = institucionalServices.getOneComplejos(id);
+		if (val.isPresent()) {
+			institucionalServices.deleteComplejos(val.get());
+			return new ResponseEntity<>("Complejo is deleted successsfully", HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>("Complejo is not deleted", HttpStatus.NOT_FOUND);
+		}
 	}
 
 	/**
@@ -146,20 +177,41 @@ public class FFManagerController {
 
 	@RequestMapping(value = "/areas/get-all", method = RequestMethod.GET)
 	public ResponseEntity<Object> getAllAreas() {
-		Collection<Areas> datos = institucionalServices.getAllAreas();	
+		
+		Collection<Areas> datos = institucionalServices.getAllAreas();
 		List<AreasDTO> listaDatosDTO = new ArrayList<AreasDTO>();
 		for (Areas area : datos) {
-			AreasDTO datosDTO = mapper.map(area,  AreasDTO.class);
+			AreasDTO datosDTO = mapper.map(area, AreasDTO.class);
+
+			var val = institucionalServices.getOneComplejos("" + area.getComplejos().getIdComplejo());
+			ComplejosDTO diDTO = val.isPresent() ? mapper.map(val.get(), ComplejosDTO.class) : null;
+			datosDTO.setComplejosDTO(diDTO);
+
 			listaDatosDTO.add(datosDTO);
 		}
 		return new ResponseEntity<>(listaDatosDTO, HttpStatus.OK);
+
 	}
 
 	@RequestMapping(value = "/areas/get-one/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Object> getOneAreas(@PathVariable("id") String id) {
+		
 		var val = institucionalServices.getOneAreas(id);
-		return new ResponseEntity<>(val.isPresent() ? mapper.map(val.get(), AreasDTO.class) : null,
-				val.isPresent() ? HttpStatus.OK : HttpStatus.NOT_FOUND);
+		if (val.isPresent()) {
+			AreasDTO aDTO = mapper.map(val.get(), AreasDTO.class);
+
+			var val2 = institucionalServices.getOneComplejos(
+					"" + val.get().getComplejos().getIdComplejo());
+			ComplejosDTO cDTO = val2.isPresent()
+					? mapper.map(val2.get(), ComplejosDTO.class)
+					: null;
+			aDTO.setComplejosDTO(cDTO);
+			
+			return new ResponseEntity<>(aDTO, HttpStatus.OK);
+
+		}
+
+		return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
 	}
 
 	@RequestMapping(value = "/areas/create", method = RequestMethod.POST)
@@ -177,10 +229,15 @@ public class FFManagerController {
 	}
 
 	@RequestMapping(value = "/areas/delete/{id}", method = RequestMethod.DELETE)
-	public ResponseEntity<Object> deleteAreas(@PathVariable("id") String id, @RequestBody AreasDTO dto) {
+	public ResponseEntity<Object> deleteAreas(@PathVariable("id") String id) {
 
-		institucionalServices.deleteAreas(mapper.map(dto, Areas.class));
-		return new ResponseEntity<>("Area is deleted successsfully", HttpStatus.OK);
+		var val = institucionalServices.getOneAreas(id);
+		if (val.isPresent()) {
+			institucionalServices.deleteAreas(val.get());
+			return new ResponseEntity<>("Area is deleted successsfully", HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>("Area is not deleted", HttpStatus.NOT_FOUND);
+		}
 	}
 
 	/**
@@ -189,10 +246,10 @@ public class FFManagerController {
 
 	@RequestMapping(value = "/tipos-areas/get-all", method = RequestMethod.GET)
 	public ResponseEntity<Object> getAllTiposAreas() {
-		Collection<TiposAreas> datos = institucionalServices.getAllTiposAreas();	
+		Collection<TiposAreas> datos = institucionalServices.getAllTiposAreas();
 		List<TiposAreasDTO> listaDatosDTO = new ArrayList<TiposAreasDTO>();
 		for (TiposAreas tipoArea : datos) {
-			TiposAreasDTO datosDTO = mapper.map(tipoArea,  TiposAreasDTO.class);
+			TiposAreasDTO datosDTO = mapper.map(tipoArea, TiposAreasDTO.class);
 			listaDatosDTO.add(datosDTO);
 		}
 		return new ResponseEntity<>(listaDatosDTO, HttpStatus.OK);
@@ -220,10 +277,15 @@ public class FFManagerController {
 	}
 
 	@RequestMapping(value = "/tipos-areas/delete/{id}", method = RequestMethod.DELETE)
-	public ResponseEntity<Object> deleteTiposAreas(@PathVariable("id") String id, @RequestBody TiposAreasDTO dto) {
+	public ResponseEntity<Object> deleteTiposAreas(@PathVariable("id") String id) {
 
-		institucionalServices.deleteTiposAreas(mapper.map(dto, TiposAreas.class));
-		return new ResponseEntity<>("Tipo Area is deleted successsfully", HttpStatus.OK);
+		var val = institucionalServices.getOneTiposAreas(id);
+		if (val.isPresent()) {
+			institucionalServices.deleteTiposAreas(val.get());
+			return new ResponseEntity<>("Tipo Area is deleted successsfully", HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>("Tipo Area is not deleted", HttpStatus.NOT_FOUND);
+		}
 	}
 
 	/**
@@ -232,10 +294,17 @@ public class FFManagerController {
 
 	@RequestMapping(value = "/sectores/get-all", method = RequestMethod.GET)
 	public ResponseEntity<Object> getAllSectores() {
-		Collection<Sectores> datos = institucionalServices.getAllSectores();	
+		
+		
+		Collection<Sectores> datos = institucionalServices.getAllSectores();
 		List<SectoresDTO> listaDatosDTO = new ArrayList<SectoresDTO>();
 		for (Sectores sector : datos) {
-			SectoresDTO datosDTO = mapper.map(sector,  SectoresDTO.class);
+			SectoresDTO datosDTO = mapper.map(sector, SectoresDTO.class);
+			
+			var val = institucionalServices.getOneAreas("" + sector.getAreas().getIdArea());
+			AreasDTO diDTO = val.isPresent() ? mapper.map(val.get(), AreasDTO.class) : null;
+			datosDTO.setAreasDTO(diDTO);
+			
 			listaDatosDTO.add(datosDTO);
 		}
 		return new ResponseEntity<>(listaDatosDTO, HttpStatus.OK);
@@ -243,9 +312,25 @@ public class FFManagerController {
 
 	@RequestMapping(value = "/sectores/get-one/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Object> getOneSectores(@PathVariable("id") String id) {
+
+		
 		var val = institucionalServices.getOneSectores(id);
-		return new ResponseEntity<>(val.isPresent() ? mapper.map(val.get(), SectoresDTO.class) : null,
-				val.isPresent() ? HttpStatus.OK : HttpStatus.NOT_FOUND);
+		if (val.isPresent()) {
+			SectoresDTO sDTO = mapper.map(val.get(), SectoresDTO.class);
+
+			var val2 = institucionalServices.getOneAreas(
+					"" + val.get().getAreas().getIdArea());
+			AreasDTO aDTO = val2.isPresent()
+					? mapper.map(val2.get(), AreasDTO.class)
+					: null;
+			sDTO.setAreasDTO(aDTO);
+			return new ResponseEntity<>(sDTO, HttpStatus.OK);
+
+		}
+
+		return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+		
+		
 	}
 
 	@RequestMapping(value = "/sectores/create", method = RequestMethod.POST)
@@ -263,10 +348,15 @@ public class FFManagerController {
 	}
 
 	@RequestMapping(value = "/sectores/delete/{id}", method = RequestMethod.DELETE)
-	public ResponseEntity<Object> deleteSectores(@PathVariable("id") String id, @RequestBody SectoresDTO dto) {
+	public ResponseEntity<Object> deleteSectores(@PathVariable("id") String id) {
 
-		institucionalServices.deleteSectores(mapper.map(dto, Sectores.class));
-		return new ResponseEntity<>("Sector is deleted successsfully", HttpStatus.OK);
+		var val = institucionalServices.getOneSectores(id);
+		if (val.isPresent()) {
+			institucionalServices.deleteSectores(val.get());
+			return new ResponseEntity<>("Sector is deleted successsfully", HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>("Sector is not deleted", HttpStatus.NOT_FOUND);
+		}
 	}
 
 }

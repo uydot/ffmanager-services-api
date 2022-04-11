@@ -1,11 +1,18 @@
 package com.services.api.ffmanager.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+@AllArgsConstructor
+@Data
+@NoArgsConstructor
 @Getter
 @Setter
 @ToString
@@ -23,8 +30,15 @@ public class SectoresDTO {
 	private boolean esSectorGolero;
 	@JsonProperty("numeroSector")
 	private int numeroSector;
+	//@JsonBackReference
+	@JsonProperty("areas")
+	private AreasDTO areasDTO;
 //	@JsonProperty("estadosDeSectores")
 //	private Set<EstadosDeSectoresDTO> estadosDeSectores;
 //	@JsonProperty("reservaDeSector")
 //	private Set<ReservaDeSectorDTO> reservaDeSector;
+	
+	public void setAreasDTO(AreasDTO a) {
+		this.areasDTO = a;
+	}
 }
