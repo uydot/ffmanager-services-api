@@ -3,6 +3,8 @@ package com.services.api.ffmanager.business;
 import java.util.Collection;
 import java.util.Optional;
 
+import org.springframework.data.repository.query.Param;
+
 import com.services.api.ffmanager.domain.entities.Cargos;
 import com.services.api.ffmanager.domain.entities.ItemsDePerfiles;
 import com.services.api.ffmanager.domain.entities.ItemsMenu;
@@ -40,6 +42,8 @@ public interface PerfilesServices {
 	public abstract void deleteItemsMenu(ItemsMenu o);
 	public abstract Optional<ItemsMenu> getOneItemsMenu(String id);
 	public Collection<ItemsMenu> getAllItemsMenu();
+	
+	public Collection<ItemsDePerfiles> findByIdPerfil(@Param("idPerfil") String idPerfil);
 	
 	
 }

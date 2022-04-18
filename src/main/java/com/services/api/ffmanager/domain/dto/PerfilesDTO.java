@@ -20,7 +20,7 @@ public class PerfilesDTO {
 	private String nombre;
 	@JsonProperty("esAdmin")
 	private boolean esAdmin;
-	@JsonProperty("itemsDePerfiles")
-	private Set<ItemsDePerfilesDTO> itemsDePerfiles;
+	//@JsonProperty("itemsDePerfiles")
+	//private Set<ItemsDePerfilesDTO> itemsDePerfiles;
 	
 }

@@ -9,6 +9,7 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -32,12 +33,12 @@ public class ItemsMenu implements Serializable {
     private boolean esHoja;
     @Column(name="es_raiz", length=1)
     private boolean esRaiz;
-    @OneToMany(mappedBy="itemsMenu")
+    @OneToMany(mappedBy="itemsMenu", fetch = FetchType.LAZY)
     private Set<ItemsMenu> itemsMenuHijos;
     @ManyToOne
     @JoinColumn(name="id_item_padre")
     private ItemsMenu itemsMenu;
-    @OneToMany(mappedBy="itemsMenu")
+    @OneToMany(mappedBy="itemsMenu", fetch = FetchType.LAZY)
     private Set<ItemsDePerfiles> itemsDePerfiles;
 
     /** Default constructor. */
@@ -167,8 +168,8 @@ public class ItemsMenu implements Serializable {
      *
      * @param aItemsMenu the new value for itemsMenu
      */
-    public void setItemsMenu(ItemsMenu aItemsMenu) {
-        itemsMenu = aItemsMenu;
+    public void setItemsMenu(ItemsMenu aItemsMenuPadre) {
+        itemsMenu = aItemsMenuPadre;
     }
 
     /**

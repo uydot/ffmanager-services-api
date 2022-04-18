@@ -13,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Version;
 
 @Entity(name="items_de_perfiles")
@@ -22,10 +23,10 @@ public class ItemsDePerfiles implements Serializable {
     @Column(name="id_item_perfil", unique=true, nullable=false, precision=10)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idItemPerfil;
-    @ManyToOne(optional=false)
+    @OneToOne(optional=false)
     @JoinColumn(name="fk_id_item_menu", nullable=false)
     private ItemsMenu itemsMenu;
-    @ManyToOne(optional=false)
+    @OneToOne(optional=false)
     @JoinColumn(name="fk_id_perfil", nullable=false)
     private Perfiles perfiles;
 

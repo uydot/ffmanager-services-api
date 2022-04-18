@@ -39,152 +39,153 @@ public class PerfilesServicesImpl implements PerfilesServices{
 
 	@Override
 	public void createUsuarios(Usuarios o) {
-		// TODO Auto-generated method stub
+		usuariosRepository.save(o);
 		
 	}
 
 	@Override
 	public void updateUsuarios(Usuarios o) {
-		// TODO Auto-generated method stub
+		usuariosRepository.save(o);
 		
 	}
 
 	@Override
 	public void deleteUsuarios(Usuarios o) {
-		// TODO Auto-generated method stub
+		usuariosRepository.delete(o);
 		
 	}
 
 	@Override
 	public Optional<Usuarios> getOneUsuarios(String id) {
-		// TODO Auto-generated method stub
-		return null;
+		return usuariosRepository.findById(Integer.parseInt(id));
 	}
 
 	@Override
 	public Collection<Usuarios> getAllUsuarios() {
-		// TODO Auto-generated method stub
-		return null;
+		return usuariosRepository.findAll();
 	}
 
 	@Override
 	public void createPerfiles(Perfiles o) {
-		// TODO Auto-generated method stub
+		perfilesRepository.save(o);
 		
 	}
 
 	@Override
 	public void updatePerfiles(Perfiles o) {
-		// TODO Auto-generated method stub
+		perfilesRepository.save(o);
 		
 	}
 
 	@Override
 	public void deletePerfiles(Perfiles o) {
-		// TODO Auto-generated method stub
+		perfilesRepository.delete(o);
 		
 	}
 
 	@Override
 	public Optional<Perfiles> getOnePerfiles(String id) {
-		// TODO Auto-generated method stub
-		return null;
+		return perfilesRepository.findById(Integer.parseInt(id));
 	}
 
 	@Override
 	public Collection<Perfiles> getAllPerfiles() {
-		// TODO Auto-generated method stub
-		return null;
+		return perfilesRepository.findAll();
 	}
 
 	@Override
 	public void createCargos(Cargos o) {
-		// TODO Auto-generated method stub
+		cargosRepository.save(o);
 		
 	}
 
 	@Override
 	public void updateCargos(Cargos o) {
-		// TODO Auto-generated method stub
+		cargosRepository.save(o);
 		
 	}
 
 	@Override
 	public void deleteCargos(Cargos o) {
-		// TODO Auto-generated method stub
+		cargosRepository.delete(o);
 		
 	}
 
 	@Override
 	public Optional<Cargos> getOneCargos(String id) {
-		// TODO Auto-generated method stub
-		return null;
+		return cargosRepository.findById(Integer.parseInt(id));
 	}
 
 	@Override
 	public Collection<Cargos> getAllCargos() {
-		// TODO Auto-generated method stub
-		return null;
+		return cargosRepository.findAll();
 	}
 
 	@Override
 	public void createItemsDePerfiles(ItemsDePerfiles o) {
-		// TODO Auto-generated method stub
+		itemsDePerfilesRepository.save(o);
 		
 	}
 
 	@Override
 	public void updateItemsDePerfiles(ItemsDePerfiles o) {
-		// TODO Auto-generated method stub
+		itemsDePerfilesRepository.save(o);
 		
 	}
 
 	@Override
 	public void deleteItemsDePerfiles(ItemsDePerfiles o) {
-		// TODO Auto-generated method stub
+		itemsDePerfilesRepository.delete(o);
 		
 	}
 
 	@Override
 	public Optional<ItemsDePerfiles> getOneItemsDePerfiles(String id) {
-		// TODO Auto-generated method stub
-		return null;
+		return itemsDePerfilesRepository.findById(Integer.parseInt(id));
 	}
 
 	@Override
 	public Collection<ItemsDePerfiles> getAllItemsDePerfiles() {
-		// TODO Auto-generated method stub
-		return null;
+		return itemsDePerfilesRepository.findAll();
 	}
 
 	@Override
 	public void createItemsMenu(ItemsMenu o) {
-		// TODO Auto-generated method stub
+		itemsMenuRepository.save(o);
 		
 	}
 
 	@Override
 	public void updateItemsMenu(ItemsMenu o) {
-		// TODO Auto-generated method stub
+		itemsMenuRepository.save(o);
 		
 	}
 
 	@Override
 	public void deleteItemsMenu(ItemsMenu o) {
-		// TODO Auto-generated method stub
+		itemsMenuRepository.delete(o);
 		
 	}
 
 	@Override
 	public Optional<ItemsMenu> getOneItemsMenu(String id) {
-		// TODO Auto-generated method stub
-		return null;
+		return itemsMenuRepository.findById(Integer.parseInt(id));
 	}
 
 	@Override
 	public Collection<ItemsMenu> getAllItemsMenu() {
-		// TODO Auto-generated method stub
-		return null;
+		return itemsMenuRepository.findAll();
 	}
+
+
+	@Override
+	public Collection<ItemsDePerfiles> findByIdPerfil(String idPerfil) {
+		return itemsDePerfilesRepository.findByIdPerfil(Integer.parseInt(idPerfil));
+	}
+
+
+
+
+	
 
 }

@@ -20,9 +20,16 @@ public class FFManagerConfiguration {
 	@Bean
 	  public GroupedOpenApi publicInstitucionalServicesApi() {
 	      return GroupedOpenApi.builder()
-	              .group("ffmanager-public-InstitucionalServices")
+	              .group("ffmanager-public")
 	              .pathsToMatch("/api-services/")
 	              .build();
 	  }
 	 
+//	@Bean
+//	  public GroupedOpenApi publicPerfilesServicesApi() {
+//	      return GroupedOpenApi.builder()
+//	              .group("ffmanager-public-PerfilesServices")
+//	              .pathsToMatch("/perfiles-services/")
+//	              .build();
+//	  }
 }

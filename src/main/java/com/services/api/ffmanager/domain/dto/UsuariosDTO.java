@@ -29,9 +29,9 @@ public class UsuariosDTO {
 	@JsonProperty("email")
 	private String email;
 	@JsonProperty("telefono")
-	private long telefono;
-	@JsonProperty("reservas")
-	private Set<ReservasDTO> reservas;
+	private String telefono;
+	//@JsonProperty("reservas")
+	//private Set<ReservasDTO> reservas;
 	@JsonProperty("cargos")
 	private CargosDTO cargos;
 	@JsonProperty("perfiles")

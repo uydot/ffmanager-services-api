@@ -38,7 +38,7 @@ public class Usuarios implements Serializable {
     @Column(length=255)
     private String email;
     @Column(nullable=false, precision=19)
-    private long telefono;
+    private String telefono;
     @OneToMany(mappedBy="usuarios")
     private Set<Reservas> reservas;
     @ManyToOne(optional=false)
@@ -184,7 +184,7 @@ public class Usuarios implements Serializable {
      *
      * @return the current value of telefono
      */
-    public long getTelefono() {
+    public String getTelefono() {
         return telefono;
     }
 
@@ -193,7 +193,7 @@ public class Usuarios implements Serializable {
      *
      * @param aTelefono the new value for telefono
      */
-    public void setTelefono(long aTelefono) {
+    public void setTelefono(String aTelefono) {
         telefono = aTelefono;
     }
 
