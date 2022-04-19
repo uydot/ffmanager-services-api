@@ -16,9 +16,9 @@ public class ItemsMenuDTO {
 
 	@JsonProperty("idItemMenu")
 	private int idItemMenu;
-	@JsonProperty("nombre")
+	@JsonProperty("label")
 	private String nombre;
-	@JsonProperty("link")
+	@JsonProperty("to")
 	private String link;
 	@JsonProperty("esHoja")
 	private boolean esHoja;
@@ -26,7 +26,13 @@ public class ItemsMenuDTO {
 	private boolean esRaiz;
 	@JsonProperty("idItemMenuPadre")
 	private String idItemMenuPadre;
-	@JsonProperty("itemsMenuHijos")
+	
+	@JsonProperty("icon")
+	private String icono;
+	@JsonProperty("order")
+	private int orden;
+	
+	@JsonProperty("items")
 	private Set<ItemsMenuDTO> itemsMenuHijos;
 	
 	public String getIdItemMenuPadre() {

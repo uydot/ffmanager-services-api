@@ -33,6 +33,13 @@ public class ItemsMenu implements Serializable {
     private boolean esHoja;
     @Column(name="es_raiz", length=1)
     private boolean esRaiz;
+    
+    @Column(name="icono", length=200)
+    private String icono;
+    @Column(name="orden")
+    private int orden;
+    
+    
     @OneToMany(mappedBy="itemsMenu", fetch = FetchType.LAZY)
     private Set<ItemsMenu> itemsMenuHijos;
     @ManyToOne
@@ -190,4 +197,21 @@ public class ItemsMenu implements Serializable {
         itemsDePerfiles = aItemsDePerfiles;
     }
 
+	public String getIcono() {
+		return icono;
+	}
+
+	public void setIcono(String icono) {
+		this.icono = icono;
+	}
+
+	public int getOrden() {
+		return orden;
+	}
+
+	public void setOrden(int orden) {
+		this.orden = orden;
+	}
+
+    
 }
