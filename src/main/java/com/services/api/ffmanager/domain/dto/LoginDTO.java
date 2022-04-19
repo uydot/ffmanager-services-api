@@ -13,7 +13,8 @@ import lombok.ToString;
 @ToString
 public class LoginDTO {
 
-	
+	@JsonProperty("idUsuario")
+	private String idUsuario;
 	@JsonProperty("usuario")
 	private String usuario;
 	@JsonProperty("password")
@@ -34,6 +35,18 @@ public class LoginDTO {
 		this.password = password;
 	}
 	
-	
+	public void setMenuCompletoDTO(List<ItemsMenuDTO> l) {
+		this.menuCompletoDTO = l;
+	}
 
+	public List<ItemsMenuDTO> getMenuCompletoDTO(){
+		return this.menuCompletoDTO;
+	}
+	public String getIdUsuario() {
+		return idUsuario;
+	}
+	public void setIdUsuario(String idUsuario) {
+		this.idUsuario = idUsuario;
+	}
+	
 }

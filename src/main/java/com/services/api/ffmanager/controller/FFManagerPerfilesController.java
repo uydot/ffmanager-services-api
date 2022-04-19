@@ -65,6 +65,7 @@ public class FFManagerPerfilesController {
 		if(usu != null && usu.getPassword().equals(dto.getPassword())) {
 			List<ItemsMenuDTO> menuCompletoDTO = findAllItemsByPerfil(""+usu.getPerfiles().getIdPerfil());
 			dto.setMenuCompletoDTO(menuCompletoDTO);
+			dto.setIdUsuario(""+usu.getIdUsuario());
 			return new ResponseEntity<>(dto, HttpStatus.OK);
 		}
 		
