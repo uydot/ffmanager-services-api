@@ -265,7 +265,8 @@ public class FFManagerPerfilesController {
 					itemRaizDTO.setIdItemMenu(itemRaiz.get().getIdItemMenu());
 					itemRaizDTO.setLink(itemRaiz.get().getLink());
 					itemRaizDTO.setNombre(itemRaiz.get().getNombre());
-					//ItemsMenuDTO itemRaizDTO = mapper.map(itemRaiz, ItemsMenuDTO.class);
+					itemRaizDTO.setOrden(itemRaiz.get().getOrden());
+					itemRaizDTO.setIcono(itemRaiz.get().getIcono());					//ItemsMenuDTO itemRaizDTO = mapper.map(itemRaiz, ItemsMenuDTO.class);
 					//listaItemsMenuDTO.add(mapper.map(itemRaiz, ItemsMenuDTO.class));
 					
 					

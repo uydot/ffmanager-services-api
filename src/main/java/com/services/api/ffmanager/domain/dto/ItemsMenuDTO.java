@@ -90,6 +90,22 @@ public class ItemsMenuDTO {
 	public Set<ItemsMenuDTO> getItemsMenuHijos() {
 		return itemsMenuHijos;
 	}
+
+	public String getIcono() {
+		return icono;
+	}
+
+	public void setIcono(String icono) {
+		this.icono = icono;
+	}
+
+	public int getOrden() {
+		return orden;
+	}
+
+	public void setOrden(int orden) {
+		this.orden = orden;
+	}
 	
 	
 }
