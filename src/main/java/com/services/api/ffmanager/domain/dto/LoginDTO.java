@@ -1,5 +1,7 @@
 package com.services.api.ffmanager.domain.dto;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
@@ -16,6 +18,9 @@ public class LoginDTO {
 	private String usuario;
 	@JsonProperty("password")
 	private String password;
+	@JsonProperty("items-menu")
+	private List<ItemsMenuDTO> menuCompletoDTO;
+	
 	public String getUsuario() {
 		return usuario;
 	}

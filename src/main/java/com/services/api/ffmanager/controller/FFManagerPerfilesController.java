@@ -64,7 +64,8 @@ public class FFManagerPerfilesController {
 		var usu = perfilesServices.findUsuario(dto.getUsuario());
 		if(usu != null && usu.getPassword().equals(dto.getPassword())) {
 			List<ItemsMenuDTO> menuCompletoDTO = findAllItemsByPerfil(""+usu.getPerfiles().getIdPerfil());
-			return new ResponseEntity<>(menuCompletoDTO, HttpStatus.OK);
+			dto.setMenuCompletoDTO(menuCompletoDTO);
+			return new ResponseEntity<>(dto, HttpStatus.OK);
 		}
 		
 		return new ResponseEntity<>("Usuario is not authorized", HttpStatus.NOT_FOUND);
@@ -417,9 +418,14 @@ public class FFManagerPerfilesController {
 	@RequestMapping(value = "/cargos/update/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<Object> updateCargos(@PathVariable("id") String id,
 			@RequestBody CargosDTO dto) {
-
-		perfilesServices.updateCargos(mapper.map(dto, Cargos.class));
-		return new ResponseEntity<>("Cargo is updated successsfully", HttpStatus.OK);
+		var val = perfilesServices.getOneCargos(id);
+		if(val.isPresent()) {
+			Cargos cargoUpdate = mapper.map(dto, Cargos.class);
+			cargoUpdate.setIdCargo(val.get().getIdCargo());
+			perfilesServices.updateCargos(cargoUpdate);
+			return new ResponseEntity<>("Cargo is updated successsfully", HttpStatus.OK);
+		}
+		return new ResponseEntity<>("Cargo is not updated", HttpStatus.NOT_FOUND);
 	}
 
 	@RequestMapping(value = "/cargos/delete/{id}", method = RequestMethod.DELETE)
