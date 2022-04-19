@@ -45,5 +45,7 @@ public interface PerfilesServices {
 	
 	public Collection<ItemsDePerfiles> findByIdPerfil(@Param("idPerfil") String idPerfil);
 	
+	public Usuarios findUsuario(@Param("usuario") String usuario);
+	
 	
 }

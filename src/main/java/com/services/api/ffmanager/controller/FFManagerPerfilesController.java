@@ -3,6 +3,7 @@ package com.services.api.ffmanager.controller;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -24,6 +25,9 @@ import com.services.api.ffmanager.business.PerfilesServices;
 import com.services.api.ffmanager.domain.dto.CargosDTO;
 import com.services.api.ffmanager.domain.dto.ItemsDePerfilesDTO;
 import com.services.api.ffmanager.domain.dto.ItemsMenuDTO;
+import com.services.api.ffmanager.domain.dto.ItemsMenuRootDTO;
+import com.services.api.ffmanager.domain.dto.LoginDTO;
+import com.services.api.ffmanager.domain.dto.PerfilesConItemsDTO;
 import com.services.api.ffmanager.domain.dto.PerfilesDTO;
 import com.services.api.ffmanager.domain.dto.UsuariosDTO;
 import com.services.api.ffmanager.domain.entities.Cargos;
@@ -51,6 +55,21 @@ public class FFManagerPerfilesController {
 		this.mapper = mapper;
 	}
 
+	
+	//Logim
+	
+	@PostMapping(value = "/usuarios/login")
+	public ResponseEntity<Object> loginUsuarios(@RequestBody LoginDTO dto) {
+		
+		var usu = perfilesServices.findUsuario(dto.getUsuario());
+		if(usu != null && usu.getPassword().equals(dto.getPassword())) {
+			List<ItemsMenuDTO> menuCompletoDTO = findAllItemsByPerfil(""+usu.getPerfiles().getIdPerfil());
+			return new ResponseEntity<>(menuCompletoDTO, HttpStatus.OK);
+		}
+		
+		return new ResponseEntity<>("Usuario is not authorized", HttpStatus.NOT_FOUND);
+	}
+	
 	/**
 	 * Rest para Usuarios
 	 */
@@ -121,8 +140,16 @@ public class FFManagerPerfilesController {
 	public ResponseEntity<Object> getOnePerfiles(@PathVariable("id") String id) {
 		var val = perfilesServices.getOnePerfiles(id);
 		if (val.isPresent()) {
-			PerfilesDTO cDTO = mapper.map(val.get(), PerfilesDTO.class);
-
+			PerfilesConItemsDTO cDTO = mapper.map(val.get(), PerfilesConItemsDTO.class);
+			
+			var itemsDePerfil = perfilesServices.findByIdPerfil(id);
+			List<ItemsDePerfilesDTO> itemsDTO = new ArrayList<ItemsDePerfilesDTO>();
+			for (Iterator iterator = itemsDePerfil.iterator(); iterator.hasNext();) {
+				ItemsDePerfiles itemsDePerfiles = (ItemsDePerfiles) iterator.next();
+				itemsDTO.add(mapper.map(itemsDePerfiles, ItemsDePerfilesDTO.class));
+			}
+			cDTO.setItemsDePerfiles(itemsDTO);
+			
 			return new ResponseEntity<>(cDTO, HttpStatus.OK);
 
 		}
@@ -176,6 +203,22 @@ public class FFManagerPerfilesController {
 		return new ResponseEntity<>(listaDatosDTO, HttpStatus.OK);
 	}
 	
+	@RequestMapping(value = "/items-menu/get-roots-without-child", method = RequestMethod.GET)
+	public ResponseEntity<Object> getAllItemsMenuRaizSinHijos() {
+		Collection<ItemsMenu> datos = perfilesServices.getAllItemsMenu();
+		List<ItemsMenuRootDTO> listaDatosDTO = new ArrayList<ItemsMenuRootDTO>();
+		
+		for (ItemsMenu dato : datos) {
+			if(dato.isEsRaiz()) {
+				ItemsMenuRootDTO datoDTO = mapper.map(dato, ItemsMenuRootDTO.class);
+					
+				listaDatosDTO.add(datoDTO);
+			}
+			
+		}
+		return new ResponseEntity<>(listaDatosDTO, HttpStatus.OK);
+	}
+	
 	@RequestMapping(value = "/items-menu/get-all", method = RequestMethod.GET)
 	public ResponseEntity<Object> getAllItemsMenu() {
 		Collection<ItemsMenu> datos = perfilesServices.getAllItemsMenu();
@@ -192,56 +235,62 @@ public class FFManagerPerfilesController {
 
 	@RequestMapping(value = "/items-menu/get-by-perfil/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Object> getItemsMenuByIdPerfil(@PathVariable("id") String id) {
-		//Busco todos los Items de un Perfil
-		var val = perfilesServices.findByIdPerfil(id);
+		List<ItemsMenuDTO> menuCompletoDTO = findAllItemsByPerfil(id);
 		
-		if(!val.isEmpty()) {
-		//List<Set<ItemsMenuDTO> > menuCompletoDTO = new ArrayList<Set<ItemsMenuDTO> >();
-		List<ItemsMenuDTO> menuCompletoDTO = new ArrayList<ItemsMenuDTO>();
-		
-		for (ItemsDePerfiles itemDePerfil : val) {
-			Set<ItemsMenuDTO> listaItemsMenuDTO = new HashSet<ItemsMenuDTO>();
-			
-			//Obtengo el Objeto Item de Menu Raiz 
-			var itemRaiz = perfilesServices.getOneItemsMenu(""+itemDePerfil.getItemsMenu().getIdItemMenu());
-			ItemsMenuDTO itemRaizDTO = new ItemsMenuDTO();
-			itemRaizDTO.setEsHoja(itemRaiz.get().isEsHoja());
-			itemRaizDTO.setEsRaiz(itemRaiz.get().isEsRaiz());
-			itemRaizDTO.setIdItemMenu(itemRaiz.get().getIdItemMenu());
-			itemRaizDTO.setLink(itemRaiz.get().getLink());
-			itemRaizDTO.setNombre(itemRaiz.get().getNombre());
-			//ItemsMenuDTO itemRaizDTO = mapper.map(itemRaiz, ItemsMenuDTO.class);
-			//listaItemsMenuDTO.add(mapper.map(itemRaiz, ItemsMenuDTO.class));
-			
-			
-			//Itero por los Item de Menu Hijos
-			for(ItemsMenu itemDeMenu : ((ItemsMenu)itemRaiz.get()).getItemsMenuHijos()) {
-				ItemsMenuDTO itemDeMenuDTO = mapper.map(itemDeMenu, ItemsMenuDTO.class);
-				//itemDeMenuDTO.setIdItemMenuPadre(""+itemRaiz.get().getItemsMenu().getIdItemMenu());
-				listaItemsMenuDTO.add(itemDeMenuDTO);
-			}
-			
-			itemRaizDTO.setItemsMenuHijos(listaItemsMenuDTO);
-			
-			//menuCompletoDTO.add(listaItemsMenuDTO);
-			menuCompletoDTO.add(itemRaizDTO);
-			
-		}
-		return new ResponseEntity<>(menuCompletoDTO, HttpStatus.OK);
+		if(menuCompletoDTO != null) {		
+			return new ResponseEntity<>(menuCompletoDTO, HttpStatus.OK);
 		}else {
-		
-
-		return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
 		}
 	}
 	
-	
+	private List<ItemsMenuDTO> findAllItemsByPerfil(String idPerfil){
+		//Busco todos los Items de un Perfil
+				var val = perfilesServices.findByIdPerfil(idPerfil);
+				
+				if(!val.isEmpty()) {
+				//List<Set<ItemsMenuDTO> > menuCompletoDTO = new ArrayList<Set<ItemsMenuDTO> >();
+				List<ItemsMenuDTO> menuCompletoDTO = new ArrayList<ItemsMenuDTO>();
+				
+				for (ItemsDePerfiles itemDePerfil : val) {
+					Set<ItemsMenuDTO> listaItemsMenuDTO = new HashSet<ItemsMenuDTO>();
+					
+					//Obtengo el Objeto Item de Menu Raiz 
+					var itemRaiz = perfilesServices.getOneItemsMenu(""+itemDePerfil.getItemsMenu().getIdItemMenu());
+					ItemsMenuDTO itemRaizDTO = new ItemsMenuDTO();
+					itemRaizDTO.setEsHoja(itemRaiz.get().isEsHoja());
+					itemRaizDTO.setEsRaiz(itemRaiz.get().isEsRaiz());
+					itemRaizDTO.setIdItemMenu(itemRaiz.get().getIdItemMenu());
+					itemRaizDTO.setLink(itemRaiz.get().getLink());
+					itemRaizDTO.setNombre(itemRaiz.get().getNombre());
+					//ItemsMenuDTO itemRaizDTO = mapper.map(itemRaiz, ItemsMenuDTO.class);
+					//listaItemsMenuDTO.add(mapper.map(itemRaiz, ItemsMenuDTO.class));
+					
+					
+					//Itero por los Item de Menu Hijos
+					for(ItemsMenu itemDeMenu : ((ItemsMenu)itemRaiz.get()).getItemsMenuHijos()) {
+						ItemsMenuDTO itemDeMenuDTO = mapper.map(itemDeMenu, ItemsMenuDTO.class);
+						//itemDeMenuDTO.setIdItemMenuPadre(""+itemRaiz.get().getItemsMenu().getIdItemMenu());
+						listaItemsMenuDTO.add(itemDeMenuDTO);
+					}
+					
+					itemRaizDTO.setItemsMenuHijos(listaItemsMenuDTO);
+					
+					//menuCompletoDTO.add(listaItemsMenuDTO);
+					menuCompletoDTO.add(itemRaizDTO);
+					
+				}
+					return menuCompletoDTO;
+				}else {
+					return null;
+				}
+	}
 
 
 	@RequestMapping(value = "/items-menu/create", method = RequestMethod.POST)
 	public ResponseEntity<Object> createItemsMenu(@RequestBody ItemsMenuDTO dto) {
 
-		if(dto.getIdItemMenuPadre() != null && !dto.getIdItemMenuPadre().isEmpty()) {
+		if(!dto.isEsRaiz()) {
 			var val = perfilesServices.getOneItemsMenu(dto.getIdItemMenuPadre());
 			if(val.isPresent()) {
 				ItemsMenu item = mapper.map(dto, ItemsMenu.class);
@@ -251,11 +300,86 @@ public class FFManagerPerfilesController {
 			} else {
 				return new ResponseEntity<>("ItemsMenuPadre not exist", HttpStatus.NOT_FOUND);
 			}
+		}else {
+			ItemsMenu item = mapper.map(dto, ItemsMenu.class);
+			perfilesServices.createItemsMenu(item);
+			return new ResponseEntity<>("ItemsMenu is created successsfully", HttpStatus.OK);
 		}
 		
-		perfilesServices.createItemsMenu(mapper.map(dto, ItemsMenu.class));
-		return new ResponseEntity<>("ItemsMenu is created successsfully", HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/items-menu/get-one/{id}", method = RequestMethod.GET)
+	public ResponseEntity<Object> getOneItemsMenu(@PathVariable("id") String id) {
+		var val = perfilesServices.getOneItemsMenu(id);
+		if (val.isPresent()) {
+			ItemsMenuDTO cDTO = mapper.map(val.get(), ItemsMenuDTO.class);
+			if(val.get().getItemsMenu() != null)//Si el item no es raiz seteo el padre
+				cDTO.setIdItemMenuPadre(""+val.get().getItemsMenu().getIdItemMenu());
+			setIdPadre(cDTO);
+			return new ResponseEntity<>(cDTO, HttpStatus.OK);
+
+		}
+
+		return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+	}
+	
+	private void setIdPadre(ItemsMenuDTO cDTO) {
+		int idPadre = cDTO.getIdItemMenu();
+		for (ItemsMenuDTO itemDTO : cDTO.getItemsMenuHijos()) {
+			itemDTO.setIdItemMenuPadre(""+idPadre);
+			//idPadre = itemDTO.getIdItemMenu();
+			setIdPadre(itemDTO);
+		}
+	}
+
+	@RequestMapping(value = "/items-menu/update/{id}", method = RequestMethod.PUT)
+	public ResponseEntity<Object> updateItemsMenu(@PathVariable("id") String id, @RequestBody ItemsMenuDTO dto) {
+
+		var val = perfilesServices.getOneItemsMenu(id);
+		if (val.isPresent()) {
+			
+			if(dto.getIdItemMenuPadre()!= null && //Si viene un idPadre en el objeto lo busco y lo seteo
+					dto.getIdItemMenuPadre() != "" ) {
+				
+				ItemsMenu item = mapper.map(dto, ItemsMenu.class);
+				item.setIdItemMenu(val.get().getIdItemMenu());
+				var itemPadre = perfilesServices.getOneItemsMenu(dto.getIdItemMenuPadre());//busco el item padre
+				item.setItemsMenu(itemPadre.get());
+				
+				perfilesServices.updateItemsMenu(item);
+				return new ResponseEntity<>("ItemsMenu is updated successsfully", HttpStatus.OK);
+				
+			}else if(dto.getIdItemMenuPadre()== null || //Si NO viene un idPadre en el objeto el nodo, busco  el que tenia y lo seteo
+					dto.getIdItemMenuPadre() == "" ) {
+				
+				ItemsMenu item = mapper.map(dto, ItemsMenu.class);
+				item.setIdItemMenu(val.get().getIdItemMenu());
+				item.setItemsMenu(val.get().getItemsMenu());
+				
+				perfilesServices.updateItemsMenu(item);
+				return new ResponseEntity<>("ItemsMenu is updated successsfully", HttpStatus.OK);
+				
+					
+				}
+			
+
+		}
 		
+		return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+
+		
+		
+	}
+
+	@RequestMapping(value = "/items-menu/delete/{id}", method = RequestMethod.DELETE)
+	public ResponseEntity<Object> deleteItemsMenu(@PathVariable("id") String id) {
+		var val = perfilesServices.getOneItemsMenu(id);
+		if (val.isPresent()) {
+			perfilesServices.deleteItemsMenu(val.get());
+			return new ResponseEntity<>("ItemsMenu is deleted successsfully", HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>("ItemsMenu is not deleted", HttpStatus.NOT_FOUND);
+		}
 	}
 
 	
@@ -313,7 +437,7 @@ public class FFManagerPerfilesController {
 	//Rest para Items de Perfil
 	
 	@RequestMapping(value = "/items-de-perfil/create", method = RequestMethod.POST)
-	public ResponseEntity<Object> createItemsDePerfiless(@RequestBody ItemsDePerfilesDTO dto) {
+	public ResponseEntity<Object> createItemsDePerfiles(@RequestBody ItemsDePerfilesDTO dto) {
 		
 		var itemMenu = perfilesServices.getOneItemsMenu(dto.getIdItemMenu());
 		var perfil = perfilesServices.getOnePerfiles(dto.getIdPerfil());
@@ -328,6 +452,34 @@ public class FFManagerPerfilesController {
 			return new ResponseEntity<>("Item de Perfil is created successsfully", HttpStatus.OK);
 		}
 		return new ResponseEntity<>("Item de Perfil is not created", HttpStatus.NOT_FOUND);
+		
+	}
+	
+	@RequestMapping(value = "/items-de-perfil/create-plus", method = RequestMethod.POST)
+	public ResponseEntity<Object> createItemsDePerfilesPlus(@RequestBody ItemsDePerfilesDTO[] dtos) {
+		
+		
+		for (int i = 0; i < dtos.length; i++) {
+			
+			var itemMenu = perfilesServices.getOneItemsMenu(dtos[i].getIdItemMenu());
+			var perfil = perfilesServices.getOnePerfiles(dtos[i].getIdPerfil());
+			
+			if(itemMenu.isPresent() && perfil.isPresent()) {
+				
+				ItemsDePerfiles itemDePerfil = new ItemsDePerfiles();
+				itemDePerfil.setItemsMenu(itemMenu.get());
+				itemDePerfil.setPerfiles(perfil.get());
+				
+				perfilesServices.createItemsDePerfiles(itemDePerfil);
+
+			}else {
+				return new ResponseEntity<>("Item de Perfil is not created", HttpStatus.NOT_FOUND);
+			}
+			
+		}	
+		
+		
+		return new ResponseEntity<>("Item de Perfil is created successsfully", HttpStatus.OK);
 		
 	}
 

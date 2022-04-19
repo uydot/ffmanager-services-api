@@ -184,8 +184,12 @@ public class PerfilesServicesImpl implements PerfilesServices{
 	}
 
 
+	@Override
+	public Usuarios findUsuario(String usuario) {
+		return usuariosRepository.findUsuario(usuario);
+	}
 
 
-	
+
 
 }
