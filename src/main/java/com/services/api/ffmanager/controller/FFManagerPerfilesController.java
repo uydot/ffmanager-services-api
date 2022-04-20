@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.modelmapper.ModelMapper;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,11 +50,14 @@ public class FFManagerPerfilesController {
 	private final ModelMapper mapper;
 	@Autowired
 	private PerfilesServices perfilesServices;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	@Autowired
-	public FFManagerPerfilesController(ModelMapper mapper, PerfilesServices perfilesServices) {
+	public FFManagerPerfilesController(ModelMapper mapper, PerfilesServices perfilesServices, PasswordEncoder passwordEncoder) {
 		this.perfilesServices = perfilesServices;
 		this.mapper = mapper;
+		this.passwordEncoder = passwordEncoder;
 	}
 
 	
@@ -62,7 +67,9 @@ public class FFManagerPerfilesController {
 	public ResponseEntity<Object> loginUsuarios(@RequestBody LoginDTO dto) {
 		
 		var usu = perfilesServices.findUsuario(dto.getUsuario());
-		if(usu != null && usu.getPassword().equals(dto.getPassword())) {
+		
+		
+		if(usu != null && passwordEncoder.matches(dto.getPassword(), usu.getPassword())) {
 			List<ItemsMenuDTO> menuCompletoDTO = findAllItemsByPerfil(""+usu.getPerfiles().getIdPerfil());
 			dto.setMenuCompletoDTO(menuCompletoDTO);
 			dto.setIdUsuario(""+usu.getIdUsuario());
@@ -98,15 +105,57 @@ public class FFManagerPerfilesController {
 
 	@PostMapping(value = "/usuarios/create")
 	public ResponseEntity<Object> createUsuarios(@RequestBody UsuariosDTO dto) {
-		perfilesServices.createUsuarios(mapper.map(dto, Usuarios.class));
+		
+		Usuarios usu = mapper.map(dto, Usuarios.class);
+		usu.setPassword(passwordEncoder.encode(dto.getPassword()));
+		perfilesServices.createUsuarios(usu);
+		
 		return new ResponseEntity<>("Usuario is created successsfully", HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/usuarios/update/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<Object> updateUsuarios(@PathVariable("id") String id,
 			@RequestBody UsuariosDTO dto) {
+		var usuOriginal = perfilesServices.getOneUsuarios(id);
+		Usuarios usuUpdate = mapper.map(dto, Usuarios.class);
+		
+		if(dto.getPassword() != null && dto.getPassword() != "")
+			usuUpdate.setPassword(passwordEncoder.encode(dto.getPassword()));
+		
+		usuUpdate.setIdUsuario(usuOriginal.get().getIdUsuario());
+		
+		if(usuUpdate.getApellido()==null)
+			usuUpdate.setApellido(usuOriginal.get().getApellido());
+		
+		if(usuUpdate.getCargos()==null)
+			usuUpdate.setCargos(usuOriginal.get().getCargos());
+		
+		if(usuUpdate.getEmail()==null)
+			usuUpdate.setEmail(usuOriginal.get().getEmail());
+		
+		if(usuUpdate.getFechaCreacion()==null)
+			usuUpdate.setFechaCreacion(usuOriginal.get().getFechaCreacion());
+		
+		if(usuUpdate.getNombre()==null)
+			usuUpdate.setNombre(usuOriginal.get().getNombre());
+		
+		if(usuUpdate.getPassword()==null)
+			usuUpdate.setPassword(usuOriginal.get().getPassword());
+		
+		if(usuUpdate.getPerfiles()==null)
+			usuUpdate.setPerfiles(usuOriginal.get().getPerfiles());
+		
+		if(usuUpdate.getReservas()==null)
+			usuUpdate.setReservas(usuOriginal.get().getReservas());
+		
+		if(usuUpdate.getTelefono()==null)
+			usuUpdate.setTelefono(usuOriginal.get().getTelefono());
+		
+		if(usuUpdate.getUsuario()==null)
+			usuUpdate.setUsuario(usuOriginal.get().getUsuario());
 
-		perfilesServices.updateUsuarios(mapper.map(dto, Usuarios.class));
+		perfilesServices.updateUsuarios(usuUpdate);
+		
 		return new ResponseEntity<>("Usuario is updated successsfully", HttpStatus.OK);
 	}
 

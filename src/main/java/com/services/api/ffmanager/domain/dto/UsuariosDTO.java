@@ -36,4 +36,12 @@ public class UsuariosDTO {
 	private CargosDTO cargos;
 	@JsonProperty("perfiles")
 	private PerfilesDTO perfiles;
+	
+	public String getPassword() {
+		return this.password;
+	}
+	
+	public void setPassword(String password) {
+		this.password = password;
+	}
 }
