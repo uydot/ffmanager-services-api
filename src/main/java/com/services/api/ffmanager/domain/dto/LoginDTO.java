@@ -21,7 +21,15 @@ public class LoginDTO {
 	private String password;
 	@JsonProperty("items-menu")
 	private List<ItemsMenuDTO> menuCompletoDTO;
+	@JsonProperty("esAdmin")
+	private String esAdmin;
 	
+	public String getEsAdmin() {
+		return esAdmin;
+	}
+	public void setEsAdmin(String esAdmin) {
+		this.esAdmin = esAdmin;
+	}
 	public String getUsuario() {
 		return usuario;
 	}

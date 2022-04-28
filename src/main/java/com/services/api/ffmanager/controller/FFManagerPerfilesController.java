@@ -73,6 +73,8 @@ public class FFManagerPerfilesController {
 			List<ItemsMenuDTO> menuCompletoDTO = findAllItemsByPerfil(""+usu.getPerfiles().getIdPerfil());
 			dto.setMenuCompletoDTO(menuCompletoDTO);
 			dto.setIdUsuario(""+usu.getIdUsuario());
+			dto.setEsAdmin((usu.getPerfiles().isEsAdmin()) ? "1" : "0");
+		
 			return new ResponseEntity<>(dto, HttpStatus.OK);
 		}
 		
