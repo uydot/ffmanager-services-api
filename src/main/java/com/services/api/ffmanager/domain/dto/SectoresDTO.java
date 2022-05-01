@@ -1,5 +1,7 @@
 package com.services.api.ffmanager.domain.dto;
 
+import java.util.Set;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -33,10 +35,10 @@ public class SectoresDTO {
 	//@JsonBackReference
 	@JsonProperty("areas")
 	private AreasDTO areasDTO;
-//	@JsonProperty("estadosDeSectores")
-//	private Set<EstadosDeSectoresDTO> estadosDeSectores;
-//	@JsonProperty("reservaDeSector")
-//	private Set<ReservaDeSectorDTO> reservaDeSector;
+	@JsonProperty("estadosDeSectores")
+	private Set<EstadosDeSectoresDTO> estadosDeSectores;
+	@JsonProperty("reservaDeSector")
+	private Set<ReservaDeSectorDTO> reservaDeSector;
 	
 	public void setAreasDTO(AreasDTO a) {
 		this.areasDTO = a;
