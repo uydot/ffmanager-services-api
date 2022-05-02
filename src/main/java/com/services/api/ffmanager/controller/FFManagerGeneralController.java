@@ -19,12 +19,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.services.api.ffmanager.business.GeneralServices;
+import com.services.api.ffmanager.business.InstitucionalServices;
 import com.services.api.ffmanager.domain.dto.ActividadesDTO;
 import com.services.api.ffmanager.domain.dto.EstadosDTO;
 import com.services.api.ffmanager.domain.dto.MaterialesDTO;
 import com.services.api.ffmanager.domain.entities.Actividades;
 import com.services.api.ffmanager.domain.entities.Estados;
+import com.services.api.ffmanager.domain.entities.EstadosDeSectores;
 import com.services.api.ffmanager.domain.entities.Materiales;
+import com.services.api.ffmanager.utils.Utilities;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -38,11 +41,14 @@ public class FFManagerGeneralController {
 	private final ModelMapper mapper;
 	@Autowired
 	private GeneralServices generalServices;
+	@Autowired
+	private InstitucionalServices institucionalServices;
 
 	@Autowired
-	public FFManagerGeneralController(ModelMapper mapper, GeneralServices generalServices) {
+	public FFManagerGeneralController(ModelMapper mapper, GeneralServices generalServices, InstitucionalServices institucionalServices) {
 		this.generalServices = generalServices;
 		this.mapper = mapper;
+		this.institucionalServices = institucionalServices;
 	}
 
 	
@@ -197,6 +203,21 @@ public class FFManagerGeneralController {
 
 	}
 	
+	@GetMapping(value = "/asignar-estado-de-sector/create/{idEstado}/{idSector}")
+	public ResponseEntity<Object> createAsignarEstadoDeSector(@PathVariable("idEstado") String idEstado, @PathVariable("idSector") String idSector) {
+		var e = generalServices.getOneEstado(idEstado);
+		var s = institucionalServices.getOneSectores(idSector);
+	
+		EstadosDeSectores estadoDeSector = new EstadosDeSectores();
+		estadoDeSector.setEstados(e.get());
+		estadoDeSector.setSectores(s.get());
+		estadoDeSector.setFechaAsignado(Utilities.getNowLocalDateTime());
+	
+		generalServices.setEstadoDeSector(estadoDeSector);
+		
+		return new ResponseEntity<>("Estados is created successsfully", HttpStatus.OK);
+	}
+
 
 
 }

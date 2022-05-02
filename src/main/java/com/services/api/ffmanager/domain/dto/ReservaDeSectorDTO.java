@@ -13,7 +13,15 @@ public class ReservaDeSectorDTO {
 	
 	@JsonProperty("idReservaSector")
 	private int idReservaSector;
-	@JsonProperty("reservas")
-	private ReservasDTO reservas;
-
+	@JsonProperty("fechaHoraDesde")
+	private String fechaHoraDesde;
+	@JsonProperty("fechaHoraHasta")
+	private String fechaHoraHasta;
+	@JsonProperty("materilesDeReserva")
+	private Integer[] materilesDeReserva;
+	@JsonProperty("actividadesDeReserva")
+	private Integer[] actividadesDeReserva;
+	@JsonProperty("usuarioDeReserva")
+	private Integer usuarioDeReserva;
+ 
 }

@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import com.services.api.ffmanager.domain.entities.Actividades;
 import com.services.api.ffmanager.domain.entities.Estados;
+import com.services.api.ffmanager.domain.entities.EstadosDeSectores;
 import com.services.api.ffmanager.domain.entities.Materiales;
 
 public interface GeneralServices {
@@ -26,5 +27,8 @@ public interface GeneralServices {
 	public abstract void deleteMateriales(Materiales o);
 	public abstract Optional<Materiales> getOneMateriales(String id);
 	public abstract Collection<Materiales> getAllMateriales();
+	
+	
+	public abstract void setEstadoDeSector(EstadosDeSectores s);
 	
 }
