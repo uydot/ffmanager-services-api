@@ -8,8 +8,11 @@ import org.springframework.stereotype.Service;
 
 import com.services.api.ffmanager.domain.entities.Actividades;
 import com.services.api.ffmanager.domain.entities.Estados;
+import com.services.api.ffmanager.domain.entities.EstadosDeSectores;
 import com.services.api.ffmanager.domain.entities.Materiales;
+import com.services.api.ffmanager.domain.entities.Sectores;
 import com.services.api.ffmanager.domain.repository.ActividadesRepository;
+import com.services.api.ffmanager.domain.repository.EstadosDeSectoresRepository;
 import com.services.api.ffmanager.domain.repository.EstadosRepository;
 import com.services.api.ffmanager.domain.repository.MaterialesRepository;
 
@@ -19,13 +22,15 @@ public class GeneralServicesImpl implements GeneralServices{
 	protected final EstadosRepository estadosRepository;
 	protected final ActividadesRepository actividadesRepository;
 	protected final MaterialesRepository materialesRepository;
+	protected final EstadosDeSectoresRepository estadosDeSectoresRepository;
 	
 	@Autowired
 	public GeneralServicesImpl(EstadosRepository estadosRepository, 
-			ActividadesRepository actividadesRepository, MaterialesRepository materialesRepository) {
+			ActividadesRepository actividadesRepository, MaterialesRepository materialesRepository, EstadosDeSectoresRepository estadosDeSectoresRepository) {
 		this.actividadesRepository = actividadesRepository;
 		this.estadosRepository = estadosRepository;
 		this.materialesRepository = materialesRepository;
+		this.estadosDeSectoresRepository = estadosDeSectoresRepository;
 	}
 	
 	@Override
@@ -109,6 +114,11 @@ public class GeneralServicesImpl implements GeneralServices{
 	@Override
 	public Collection<Materiales> getAllMateriales() {
 		return materialesRepository.findAll();
+	}
+
+	@Override
+	public void setEstadoDeSector(EstadosDeSectores s) {
+		estadosDeSectoresRepository.save(s);
 	}
 
 }

@@ -35,18 +35,18 @@ public class Sectores implements Serializable {
     private boolean esSectorGolero;
     @Column(name="numero_sector", nullable=false, precision=10)
     private int numeroSector;
-//    @OneToMany(mappedBy="sectores")
-//    private Set<EstadosDeSectores> estadosDeSectores;
-//    @ManyToOne(optional=false)
+    @OneToMany(mappedBy="sectores")
+    private Set<EstadosDeSectores> estadosDeSectores;
+    @ManyToOne(optional=false)
     @JoinColumn(name="fk_id_area", nullable=false)
     private Areas areas;
-//    @OneToMany(mappedBy="sectores")
-//    private Set<ReservaDeSector> reservaDeSector;
+    @OneToMany(mappedBy="sectores")
+    private Set<ReservaDeSector> reservaDeSector;
 
-//    /** Default constructor. */
-//    public Sectores() {
-//        super();
-//    }
+    /** Default constructor. */
+    public Sectores() {
+        super();
+    }
 
     /**
      * Access method for idSector.
@@ -156,23 +156,23 @@ public class Sectores implements Serializable {
         numeroSector = aNumeroSector;
     }
 
-//    /**
-//     * Access method for estadosDeSectores.
-//     *
-//     * @return the current value of estadosDeSectores
-//     */
-//    public Set<EstadosDeSectores> getEstadosDeSectores() {
-//        return estadosDeSectores;
-//    }
-//
-//    /**
-//     * Setter method for estadosDeSectores.
-//     *
-//     * @param aEstadosDeSectores the new value for estadosDeSectores
-//     */
-//    public void setEstadosDeSectores(Set<EstadosDeSectores> aEstadosDeSectores) {
-//        estadosDeSectores = aEstadosDeSectores;
-//    }
+    /**
+     * Access method for estadosDeSectores.
+     *
+     * @return the current value of estadosDeSectores
+     */
+    public Set<EstadosDeSectores> getEstadosDeSectores() {
+        return estadosDeSectores;
+    }
+
+    /**
+     * Setter method for estadosDeSectores.
+     *
+     * @param aEstadosDeSectores the new value for estadosDeSectores
+     */
+    public void setEstadosDeSectores(Set<EstadosDeSectores> aEstadosDeSectores) {
+        estadosDeSectores = aEstadosDeSectores;
+    }
 
     /**
      * Access method for areas.
@@ -192,23 +192,23 @@ public class Sectores implements Serializable {
         areas = aAreas;
     }
 
-//    /**
-//     * Access method for reservaDeSector.
-//     *
-//     * @return the current value of reservaDeSector
-//     */
-//    public Set<ReservaDeSector> getReservaDeSector() {
-//        return reservaDeSector;
-//    }
-//
-//    /**
-//     * Setter method for reservaDeSector.
-//     *
-//     * @param aReservaDeSector the new value for reservaDeSector
-//     */
-//    public void setReservaDeSector(Set<ReservaDeSector> aReservaDeSector) {
-//        reservaDeSector = aReservaDeSector;
-//    }
+    /**
+     * Access method for reservaDeSector.
+     *
+     * @return the current value of reservaDeSector
+     */
+    public Set<ReservaDeSector> getReservaDeSector() {
+        return reservaDeSector;
+    }
+
+    /**
+     * Setter method for reservaDeSector.
+     *
+     * @param aReservaDeSector the new value for reservaDeSector
+     */
+    public void setReservaDeSector(Set<ReservaDeSector> aReservaDeSector) {
+        reservaDeSector = aReservaDeSector;
+    }
 
   
 }
