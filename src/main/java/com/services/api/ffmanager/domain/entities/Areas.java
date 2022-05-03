@@ -32,8 +32,8 @@ public class Areas implements Serializable {
     @ManyToOne(optional=false)
     @JoinColumn(name="fk_id_complejo", nullable=false)
     private Complejos complejos;
-    @OneToMany(mappedBy="areas")
-    private Set<ReservaDeArea> reservaDeArea;
+//    @OneToMany(mappedBy="areas")
+//    private Set<ReservaDeArea> reservaDeArea;
     @ManyToOne(optional=false)
     @JoinColumn(name="fk_id_tipo_area", nullable=false)
     private TiposAreas tiposAreas;
@@ -119,23 +119,23 @@ public class Areas implements Serializable {
         complejos = aComplejos;
     }
 
-    /**
-     * Access method for reservaDeArea.
-     *
-     * @return the current value of reservaDeArea
-     */
-    public Set<ReservaDeArea> getReservaDeArea() {
-        return reservaDeArea;
-    }
-
-    /**
-     * Setter method for reservaDeArea.
-     *
-     * @param aReservaDeArea the new value for reservaDeArea
-     */
-    public void setReservaDeArea(Set<ReservaDeArea> aReservaDeArea) {
-        reservaDeArea = aReservaDeArea;
-    }
+//    /**
+//     * Access method for reservaDeArea.
+//     *
+//     * @return the current value of reservaDeArea
+//     */
+//    public Set<ReservaDeArea> getReservaDeArea() {
+//        return reservaDeArea;
+//    }
+//
+//    /**
+//     * Setter method for reservaDeArea.
+//     *
+//     * @param aReservaDeArea the new value for reservaDeArea
+//     */
+//    public void setReservaDeArea(Set<ReservaDeArea> aReservaDeArea) {
+//        reservaDeArea = aReservaDeArea;
+//    }
 
     /**
      * Access method for tiposAreas.

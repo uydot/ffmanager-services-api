@@ -30,8 +30,8 @@ public class Reservas implements Serializable {
     private LocalDateTime fechaDesde;
     @Column(name="fecha_hasta")
     private LocalDateTime fechaHasta;
-    @OneToMany(mappedBy="reservas")
-    private Set<ReservaDeArea> reservaDeArea;
+//    @OneToMany(mappedBy="reservas")
+//    private Set<ReservaDeArea> reservaDeArea;
     @OneToMany(mappedBy="reservas")
     private Set<ActividadesDeReserva> actividadesDeReserva;
     @OneToMany(mappedBy="reservas")
@@ -101,23 +101,23 @@ public class Reservas implements Serializable {
         fechaHasta = aFechaHasta;
     }
 
-    /**
-     * Access method for reservaDeArea.
-     *
-     * @return the current value of reservaDeArea
-     */
-    public Set<ReservaDeArea> getReservaDeArea() {
-        return reservaDeArea;
-    }
-
-    /**
-     * Setter method for reservaDeArea.
-     *
-     * @param aReservaDeArea the new value for reservaDeArea
-     */
-    public void setReservaDeArea(Set<ReservaDeArea> aReservaDeArea) {
-        reservaDeArea = aReservaDeArea;
-    }
+//    /**
+//     * Access method for reservaDeArea.
+//     *
+//     * @return the current value of reservaDeArea
+//     */
+//    public Set<ReservaDeArea> getReservaDeArea() {
+//        return reservaDeArea;
+//    }
+//
+//    /**
+//     * Setter method for reservaDeArea.
+//     *
+//     * @param aReservaDeArea the new value for reservaDeArea
+//     */
+//    public void setReservaDeArea(Set<ReservaDeArea> aReservaDeArea) {
+//        reservaDeArea = aReservaDeArea;
+//    }
 
     /**
      * Access method for actividadesDeReserva.

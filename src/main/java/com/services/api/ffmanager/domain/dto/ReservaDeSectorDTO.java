@@ -11,17 +11,17 @@ import lombok.ToString;
 @ToString
 public class ReservaDeSectorDTO {
 	
-	@JsonProperty("idReservaSector")
-	private int idReservaSector;
+	@JsonProperty("idSector")
+	private String idSector;//idSector
 	@JsonProperty("fechaHoraDesde")
-	private String fechaHoraDesde;
+	private String fechaHoraDesde;//Formato aaaa-MM-dd HH:MM:SS
 	@JsonProperty("fechaHoraHasta")
-	private String fechaHoraHasta;
+	private String fechaHoraHasta;//Formato aaaa-MM-dd HH:MM:SS
 	@JsonProperty("materilesDeReserva")
-	private Integer[] materilesDeReserva;
+	private MaterialCantidadDTO[] materilesDeReserva;//Lista de idMateriales
 	@JsonProperty("actividadesDeReserva")
-	private Integer[] actividadesDeReserva;
+	private String[] actividadesDeReserva;//Lista de idActividades
 	@JsonProperty("usuarioDeReserva")
-	private Integer usuarioDeReserva;
+	private String usuarioDeReserva;//idUsuario
  
 }
