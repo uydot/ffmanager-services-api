@@ -27,4 +27,21 @@ public class Utilities {
 		return localDateTime;
 	}
 	
+	/*
+	 * Metodo que devuelve:
+	 * . 0 si son iguales
+	 * . >0 si ldt1 es mayor que ldt2
+	 * . <= si ldt1 es menor que ldt2
+	 * 
+	 */
+	public static int compareLocalDateTime(LocalDateTime ldt1, LocalDateTime ldt2) {
+		int diff = ldt1.compareTo(ldt2);
+
+		if (diff > 0) {
+		  return 1;	//Prints it
+		} else if (diff < 0) {
+		  return -1;
+		}
+		return 0;
+	}
 }

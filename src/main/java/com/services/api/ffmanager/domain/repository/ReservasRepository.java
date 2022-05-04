@@ -18,9 +18,7 @@ public interface ReservasRepository extends JpaRepository<Reservas, Integer> {
 	 * @param fechaHasta
 	 * @return
 	 */
-	@Query(value = "select s.id_sector, s.nombre, s.observaciones, s.tamaño, s.fk_id_area, s.es_sector_golero, s.numero_sector FROM sectores s WHERE s.id_sector NOT IN (select s.id_sector FROM sectores s , reserva_de_sector rds , "
-			+ "reservas r WHERE s.id_sector = rds.fk_id_sector AND rds.fk_id_reserva = r.id_reserva "
-			+ "AND r.fecha_desde >= :fechaDesde AND r.fecha_hasta <= :fechaHasta ) "
-			+ "AND s.id_sector NOT IN (select eds.fk_id_sector from estados_de_sectores eds, estados e where eds.fk_id_estado = e.id_estado AND e.permite_usar = 0) " , nativeQuery=true)
-	public Collection<Object[]> getAllSectoresDisponibles(@Param("fechaDesde") Date fechaDesde, @Param("fechaHasta") Date fechaHasta);
+	//@Query(value = "select s.id_sector, s.nombre, s.observaciones, s.tamaño, s.fk_id_area, s.es_sector_golero, s.numero_sector FROM sectores s, areas a WHERE s.fk_id_area = a.id_area AND a.id_area = :idArea " , nativeQuery=true)
+	@Query("select s from sectores s where s.areas.idArea = :idArea")
+	public Collection<Sectores> getAllSectoresDisponibles(@Param("idArea") Integer idArea);
 }

@@ -5,12 +5,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.services.api.ffmanager.domain.entities.ActividadesDeReserva;
+import com.services.api.ffmanager.domain.entities.EstadosDeSectores;
 import com.services.api.ffmanager.domain.entities.MaterialesDeReserva;
 import com.services.api.ffmanager.domain.entities.ReservaDeSector;
 import com.services.api.ffmanager.domain.entities.Reservas;
@@ -20,6 +23,7 @@ import com.services.api.ffmanager.domain.repository.MaterialesDeReservaRepositor
 import com.services.api.ffmanager.domain.repository.ReservaDeSectorRepository;
 import com.services.api.ffmanager.domain.repository.ReservasRepository;
 import com.services.api.ffmanager.domain.repository.SectoresRepository;
+import com.services.api.ffmanager.utils.Utilities;
 
 @Service
 public class ReservasServicesImpl implements ReservasServices {
@@ -43,24 +47,33 @@ public class ReservasServicesImpl implements ReservasServices {
 	}
 
 	@Override
-	public Collection<Sectores> getAllSectoresDisponibles(Date fechaDesde, Date fechaHasta) {
-		List<Object[]> listResult = (List<Object[]>) reservasRepository.getAllSectoresDisponibles(fechaDesde,
-				fechaHasta);
-		List<Sectores> sectores = new ArrayList<Sectores>();
-		Sectores s;
-		for (Object[] o : listResult) {
-			s = new Sectores();
-			s.setIdSector((Integer) o[0]);
-			s.setNombre((String) o[1]);
-			s.setObservaciones((String) o[2]);
-			s.setTamano((Double) o[3]);
-			s.setEsSectorGolero((Boolean) o[5]);
-			s.setNumeroSector((Integer) o[6]);
-			sectores.add(s);
+	public Collection<Sectores> getAllSectoresDisponibles(Integer idArea, Date fechaDesde, Date fechaHasta) {
+		Collection<Sectores> listResult = (Collection<Sectores>) reservasRepository.getAllSectoresDisponibles(idArea);
+		Collection<Sectores> sectores = new ArrayList<Sectores>();
+		for (Sectores o : listResult) {
+			Set<EstadosDeSectores> ultimoEstadoEnLista = new LinkedHashSet<EstadosDeSectores>();
+			EstadosDeSectores ultimoEstado = getUltimoEstado(o.getEstadosDeSectores());
+			ultimoEstadoEnLista.add(ultimoEstado);
+			o.setEstadosDeSectores(ultimoEstadoEnLista);
+			sectores.add(o);		
 		}
 		return sectores;
 	}
 
+	private EstadosDeSectores getUltimoEstado(Collection<EstadosDeSectores> estados) {
+		if(estados != null && !estados.isEmpty()) {
+			EstadosDeSectores result = estados.iterator().next();//Me quedo con el primer estado
+			for (EstadosDeSectores estadosDeSectores : estados) {	
+				if(Utilities.compareLocalDateTime(estadosDeSectores.getFechaAsignado() , result.getFechaAsignado()) > 0 ) {//Comparo las fechas, y me quedo con el mas nuevo
+					result = estadosDeSectores;
+				}
+			}
+			return result;
+		}
+		return null;
+		
+	}
+	
 	@Override
 	public void seleccionarSectores(Collection<Reservas> reservas) {
 		// TODO Auto-generated method stub
