@@ -77,8 +77,9 @@ public class ReservasServicesImpl implements ReservasServices {
 	
 	private Collection<Sectores> getSectoresNoReservados(Collection<Sectores> sectores){
 		Collection<Sectores> sectoresDisponibles = new ArrayList<Sectores>();
+		//List<Integer> listaHoras = Utilities.getHoras(null, null)
 		for (Sectores s : sectores) {
-			
+		
 		}
 		return sectoresDisponibles;
 	}
