@@ -28,6 +28,7 @@ import com.services.api.ffmanager.domain.dto.ReservasDTO;
 import com.services.api.ffmanager.domain.dto.SectoresDTO;
 import com.services.api.ffmanager.domain.entities.ActividadesDeReserva;
 import com.services.api.ffmanager.domain.entities.MaterialesDeReserva;
+import com.services.api.ffmanager.domain.entities.ReservaDeSector;
 import com.services.api.ffmanager.domain.entities.Reservas;
 import com.services.api.ffmanager.domain.entities.Sectores;
 import com.services.api.ffmanager.utils.Utilities;
@@ -123,6 +124,12 @@ public class FFManagerReservasController {
 				reservasServices.createActividadesDeReserva(adr);
 			}
 		}
+		
+		//Genero la reserva del sector
+		ReservaDeSector rds = new ReservaDeSector();
+		rds.setReservas(reserva);
+		rds.setSectores(sector.get());
+		reservasServices.createReservaDeSector(rds);
 
 		return new ResponseEntity<>(mapper.map(reserva, ReservasDTO.class), HttpStatus.OK);
 

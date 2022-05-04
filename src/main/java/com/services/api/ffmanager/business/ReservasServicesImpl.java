@@ -57,6 +57,7 @@ public class ReservasServicesImpl implements ReservasServices {
 			o.setEstadosDeSectores(ultimoEstadoEnLista);
 			sectores.add(o);		
 		}
+		
 		return sectores;
 	}
 
@@ -70,10 +71,17 @@ public class ReservasServicesImpl implements ReservasServices {
 			}
 			return result;
 		}
-		return null;
-		
+		return null;		
 	}
 	
+	
+	private Collection<Sectores> getSectoresNoReservados(Collection<Sectores> sectores){
+		Collection<Sectores> sectoresDisponibles = new ArrayList<Sectores>();
+		for (Sectores s : sectores) {
+			
+		}
+		return sectoresDisponibles;
+	}
 	@Override
 	public void seleccionarSectores(Collection<Reservas> reservas) {
 		// TODO Auto-generated method stub
