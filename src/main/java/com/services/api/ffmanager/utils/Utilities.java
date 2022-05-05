@@ -64,6 +64,7 @@ public class Utilities {
 		return listaHoras;
 	}
 	
+
 //	
 //	public static List<Integer> getHorasFromDates(DateTimeFormatter  start, Date end){
 //		List<Integer> listaHoras = new ArrayList<Integer>();

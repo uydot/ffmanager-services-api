@@ -1,11 +1,9 @@
 package com.services.api.ffmanager.business;
 
-import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -48,7 +46,7 @@ public class ReservasServicesImpl implements ReservasServices {
 	}
 
 	@Override
-	public Collection<Sectores> getAllSectoresDisponibles(Integer idArea, LocalDateTime fechaDesde, LocalDateTime fechaHasta) {
+	public HashMap<String, List<Sectores>> getAllSectoresDisponibles(Integer idArea, LocalDateTime fechaDesde, LocalDateTime fechaHasta) {
 		Collection<Sectores> listResult = (Collection<Sectores>) reservasRepository.getAllSectoresDisponibles(idArea);
 		Collection<Sectores> sectores = new ArrayList<Sectores>();
 		for (Sectores o : listResult) {
@@ -58,10 +56,11 @@ public class ReservasServicesImpl implements ReservasServices {
 			o.setEstadosDeSectores(ultimoEstadoEnLista);
 			sectores.add(o);		
 		}
-		
-		return sectores;
+			
+		return getSectoresReservados(sectores, fechaDesde, fechaHasta);
 	}
 
+	//Devuelve el estado ultimo del sector
 	private EstadosDeSectores getUltimoEstado(Collection<EstadosDeSectores> estados) {
 		if(estados != null && !estados.isEmpty()) {
 			EstadosDeSectores result = estados.iterator().next();//Me quedo con el primer estado
@@ -76,14 +75,25 @@ public class ReservasServicesImpl implements ReservasServices {
 	}
 	
 	
-	private Collection<Sectores> getSectoresNoReservados(Collection<Sectores> sectores, LocalDateTime fechaDesde, LocalDateTime fechaHasta){
-		Collection<Sectores> sectoresDisponibles = new ArrayList<Sectores>();
-		List<Integer> listaHoras = Utilities.getHoras(fechaDesde, fechaHasta);
+	private HashMap<String, List<Sectores>>  getSectoresReservados(Collection<Sectores> sectores, LocalDateTime fechaDesde, LocalDateTime fechaHasta){
+		HashMap<String, List<Sectores>> hashResultado = new HashMap<String, List<Sectores>>();
+		List<Sectores> sectoresOcupados = new ArrayList<Sectores>();
+		List<Sectores> sectoresLibres = new ArrayList<Sectores>();
 		for (Sectores s : sectores) {
-		
+			Integer id = reservasRepository.isOcupado(s.getIdSector(), fechaDesde, fechaHasta);
+			if(id != null) {//Si devuelve el id del sector, entonces en ese rango de horas el sector esta ocupado
+				sectoresOcupados.add(s);
+			}else {
+				sectoresLibres.add(s);
+			}
 		}
-		return sectoresDisponibles;
+		hashResultado.put(_libres, sectoresLibres);
+		hashResultado.put(_ocupados, sectoresOcupados);
+		
+		return hashResultado;
 	}
+	
+	
 	@Override
 	public void seleccionarSectores(Collection<Reservas> reservas) {
 		// TODO Auto-generated method stub

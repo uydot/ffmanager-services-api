@@ -3,6 +3,7 @@ package com.services.api.ffmanager.controller;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -25,6 +26,7 @@ import com.services.api.ffmanager.business.ReservasServices;
 import com.services.api.ffmanager.domain.dto.MaterialCantidadDTO;
 import com.services.api.ffmanager.domain.dto.ReservaDeSectorTransferDTO;
 import com.services.api.ffmanager.domain.dto.ReservasDTO;
+import com.services.api.ffmanager.domain.dto.ResultadoBusquedaSectoresDTO;
 import com.services.api.ffmanager.domain.dto.SectoresDTO;
 import com.services.api.ffmanager.domain.entities.ActividadesDeReserva;
 import com.services.api.ffmanager.domain.entities.MaterialesDeReserva;
@@ -67,7 +69,7 @@ public class FFManagerReservasController {
 	public ResponseEntity<Object> getAllSectoresDisponibles(@PathVariable("idArea") String idArea,
 			@PathVariable("fechaDesde") String fechaDesde, @PathVariable("fechaHasta") String fechaHasta) {
 
-		Collection<Sectores> datos = null;
+		HashMap<String, List<Sectores>> datos = null;
 		try {
 			datos = reservasServices.getAllSectoresDisponibles(Integer.parseInt(idArea),
 					Utilities.getDateTimeFromString(fechaDesde), Utilities.getDateTimeFromString(fechaHasta));
@@ -75,12 +77,24 @@ public class FFManagerReservasController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		List<SectoresDTO> listaDatosDTO = new ArrayList<SectoresDTO>();
-		for (Sectores dato : datos) {
+		List<SectoresDTO> listaDatosLibresDTO = new ArrayList<SectoresDTO>();
+		List<SectoresDTO> listaDatosOcupadosDTO = new ArrayList<SectoresDTO>();
+		
+		for (Sectores dato : datos.get(ReservasServices._libres)) {
 			SectoresDTO datoDTO = mapper.map(dato, SectoresDTO.class);
-			listaDatosDTO.add(datoDTO);
+			listaDatosLibresDTO.add(datoDTO);
 		}
-		return new ResponseEntity<>(listaDatosDTO, HttpStatus.OK);
+		
+		for (Sectores dato : datos.get(ReservasServices._ocupados)) {
+			SectoresDTO datoDTO = mapper.map(dato, SectoresDTO.class);
+			listaDatosOcupadosDTO.add(datoDTO);
+		}
+		
+		ResultadoBusquedaSectoresDTO resultDTO = new ResultadoBusquedaSectoresDTO();
+		resultDTO.setListaDatosLibresDTO(listaDatosLibresDTO);
+		resultDTO.setListaDatosOcupadosDTO(listaDatosOcupadosDTO);
+		
+		return new ResponseEntity<>(resultDTO, HttpStatus.OK);
 	}
 
 	@PostMapping(value = "/reservas/reservar")
@@ -124,8 +138,8 @@ public class FFManagerReservasController {
 				reservasServices.createActividadesDeReserva(adr);
 			}
 		}
-		
-		//Genero la reserva del sector
+
+		// Genero la reserva del sector
 		ReservaDeSector rds = new ReservaDeSector();
 		rds.setReservas(reserva);
 		rds.setSectores(sector.get());

@@ -2,6 +2,8 @@ package com.services.api.ffmanager.business;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 
 import com.services.api.ffmanager.domain.entities.ActividadesDeReserva;
 import com.services.api.ffmanager.domain.entities.MaterialesDeReserva;
@@ -11,7 +13,10 @@ import com.services.api.ffmanager.domain.entities.Sectores;
 
 public interface ReservasServices {
 
-	public abstract Collection<Sectores> getAllSectoresDisponibles(Integer idArea, LocalDateTime fechaDesde, LocalDateTime fechaHasta);
+	public static String _libres = "sectores_libres";
+	public static String _ocupados = "sectores_ocupados";
+	
+	public abstract HashMap<String, List<Sectores>> getAllSectoresDisponibles(Integer idArea, LocalDateTime fechaDesde, LocalDateTime fechaHasta);
 	
 	public abstract void seleccionarSectores(Collection<Reservas> reservas);
 	
