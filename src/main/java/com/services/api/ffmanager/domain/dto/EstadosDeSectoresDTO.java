@@ -19,5 +19,8 @@ public class EstadosDeSectoresDTO {
 	private LocalDateTime fechaAsignado;
 	@JsonProperty("estados")
 	private EstadosDTO estados;
+	@JsonProperty("sector")
+	private SectoresDTO sectores;
+	
 
 }

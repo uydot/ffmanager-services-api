@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.services.api.ffmanager.domain.entities.ActividadesDeReserva;
+import com.services.api.ffmanager.domain.entities.Estados;
 import com.services.api.ffmanager.domain.entities.MaterialesDeReserva;
 import com.services.api.ffmanager.domain.entities.ReservaDeSector;
 import com.services.api.ffmanager.domain.entities.Reservas;
@@ -27,5 +28,9 @@ public interface ReservasServices {
 	public abstract void createMaterialesDeReserva(MaterialesDeReserva materiales);
 	
 	public abstract void createActividadesDeReserva(ActividadesDeReserva materiales);
+	
+	public abstract void setEstadoSector(Integer sector, Integer estado);
+	
+	
 	
 }

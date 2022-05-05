@@ -23,6 +23,7 @@ import com.services.api.ffmanager.business.GeneralServices;
 import com.services.api.ffmanager.business.InstitucionalServices;
 import com.services.api.ffmanager.business.PerfilesServices;
 import com.services.api.ffmanager.business.ReservasServices;
+import com.services.api.ffmanager.domain.dto.EstadosDeSectoresSimpleDTO;
 import com.services.api.ffmanager.domain.dto.MaterialCantidadDTO;
 import com.services.api.ffmanager.domain.dto.ReservaDeSectorTransferDTO;
 import com.services.api.ffmanager.domain.dto.ReservasDTO;
@@ -149,4 +150,11 @@ public class FFManagerReservasController {
 
 	}
 
+
+	@PostMapping(value = "/reservas/set-sector-estado")
+	public ResponseEntity<Object> setSectorEstado(@RequestBody EstadosDeSectoresSimpleDTO dto) {
+		reservasServices.setEstadoSector(Integer.parseInt(dto.getSector()), Integer.parseInt(dto.getEstado()));
+		return new ResponseEntity<>("Estado del sector is created successsfully", HttpStatus.OK);
+		
+	}
 }

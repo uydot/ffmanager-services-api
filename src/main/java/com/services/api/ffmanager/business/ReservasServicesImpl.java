@@ -12,12 +12,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.services.api.ffmanager.domain.entities.ActividadesDeReserva;
+import com.services.api.ffmanager.domain.entities.Estados;
 import com.services.api.ffmanager.domain.entities.EstadosDeSectores;
 import com.services.api.ffmanager.domain.entities.MaterialesDeReserva;
 import com.services.api.ffmanager.domain.entities.ReservaDeSector;
 import com.services.api.ffmanager.domain.entities.Reservas;
 import com.services.api.ffmanager.domain.entities.Sectores;
 import com.services.api.ffmanager.domain.repository.ActividadesDeReservaRepository;
+import com.services.api.ffmanager.domain.repository.EstadosDeSectoresRepository;
+import com.services.api.ffmanager.domain.repository.EstadosRepository;
 import com.services.api.ffmanager.domain.repository.MaterialesDeReservaRepository;
 import com.services.api.ffmanager.domain.repository.ReservaDeSectorRepository;
 import com.services.api.ffmanager.domain.repository.ReservasRepository;
@@ -32,17 +35,23 @@ public class ReservasServicesImpl implements ReservasServices {
 	ReservaDeSectorRepository reservaDeSectorRepository;
 	MaterialesDeReservaRepository materialesDeReservaRepository;
 	ActividadesDeReservaRepository actividadesDeReservaRepository;
+	EstadosDeSectoresRepository estadoDeSectorRepository;
+	EstadosRepository estadosRepository;
 
 	@Autowired
 	public ReservasServicesImpl(SectoresRepository sectoresRepository, ReservasRepository reservasRepository,
 			ReservaDeSectorRepository reservaDeSectorRepository,
 			MaterialesDeReservaRepository materialesDeReservaRepository,
-			ActividadesDeReservaRepository actividadesDeReservaRepository) {
+			ActividadesDeReservaRepository actividadesDeReservaRepository,
+			EstadosDeSectoresRepository estadoDeSectorRepository,
+			EstadosRepository estadosRepository) {
 		this.reservasRepository = reservasRepository;
 		this.sectoresRepository = sectoresRepository;
 		this.reservaDeSectorRepository = reservaDeSectorRepository;
 		this.materialesDeReservaRepository = materialesDeReservaRepository;
 		this.actividadesDeReservaRepository = actividadesDeReservaRepository;
+		this.estadoDeSectorRepository = estadoDeSectorRepository;
+		this.estadosRepository = estadosRepository;
 	}
 
 	@Override
@@ -117,6 +126,20 @@ public class ReservasServicesImpl implements ReservasServices {
 	@Override
 	public void createActividadesDeReserva(ActividadesDeReserva actividades) {
 		actividadesDeReservaRepository.save(actividades);
+	}
+
+	@Override
+	public void setEstadoSector(Integer sector, Integer estado) {
+		
+		Sectores s = sectoresRepository.getById(sector);
+		Estados e = estadosRepository.getById(estado);
+		EstadosDeSectores eds = new EstadosDeSectores();
+		eds.setEstados(e);
+		eds.setSectores(s);
+		eds.setFechaAsignado(Utilities.getNowLocalDateTime());
+		
+		estadoDeSectorRepository.save(eds);
+		
 	}
 
 }
