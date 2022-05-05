@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.services.api.ffmanager.domain.entities.ActividadesDeReserva;
+import com.services.api.ffmanager.domain.entities.Areas;
+import com.services.api.ffmanager.domain.entities.Complejos;
 import com.services.api.ffmanager.domain.entities.Estados;
 import com.services.api.ffmanager.domain.entities.EstadosDeSectores;
 import com.services.api.ffmanager.domain.entities.MaterialesDeReserva;
@@ -19,6 +21,8 @@ import com.services.api.ffmanager.domain.entities.ReservaDeSector;
 import com.services.api.ffmanager.domain.entities.Reservas;
 import com.services.api.ffmanager.domain.entities.Sectores;
 import com.services.api.ffmanager.domain.repository.ActividadesDeReservaRepository;
+import com.services.api.ffmanager.domain.repository.AreasRepository;
+import com.services.api.ffmanager.domain.repository.ComplejosRepository;
 import com.services.api.ffmanager.domain.repository.EstadosDeSectoresRepository;
 import com.services.api.ffmanager.domain.repository.EstadosRepository;
 import com.services.api.ffmanager.domain.repository.MaterialesDeReservaRepository;
@@ -37,6 +41,8 @@ public class ReservasServicesImpl implements ReservasServices {
 	ActividadesDeReservaRepository actividadesDeReservaRepository;
 	EstadosDeSectoresRepository estadoDeSectorRepository;
 	EstadosRepository estadosRepository;
+	AreasRepository areasRepository;
+	ComplejosRepository complejosRepository;
 
 	@Autowired
 	public ReservasServicesImpl(SectoresRepository sectoresRepository, ReservasRepository reservasRepository,
@@ -44,7 +50,9 @@ public class ReservasServicesImpl implements ReservasServices {
 			MaterialesDeReservaRepository materialesDeReservaRepository,
 			ActividadesDeReservaRepository actividadesDeReservaRepository,
 			EstadosDeSectoresRepository estadoDeSectorRepository,
-			EstadosRepository estadosRepository) {
+			EstadosRepository estadosRepository,
+			AreasRepository areasRepository,
+			ComplejosRepository complejosRepository) {
 		this.reservasRepository = reservasRepository;
 		this.sectoresRepository = sectoresRepository;
 		this.reservaDeSectorRepository = reservaDeSectorRepository;
@@ -52,6 +60,8 @@ public class ReservasServicesImpl implements ReservasServices {
 		this.actividadesDeReservaRepository = actividadesDeReservaRepository;
 		this.estadoDeSectorRepository = estadoDeSectorRepository;
 		this.estadosRepository = estadosRepository;
+		this.areasRepository = areasRepository;
+		this.complejosRepository = complejosRepository;
 	}
 
 	@Override
@@ -141,5 +151,22 @@ public class ReservasServicesImpl implements ReservasServices {
 		estadoDeSectorRepository.save(eds);
 		
 	}
+
+	@Override
+	public HashMap<String, Areas> getAllAreasDisponibles(Integer idComplejo, LocalDateTime fechaDesde,
+			LocalDateTime fechaHasta) {
+		
+		Complejos complejo = complejosRepository.getById(idComplejo);
+		
+		HashMap<String, Areas> hashAreas = new HashMap<String, Areas>();
+		
+		for (Areas area : complejo.getAreas()) {
+			hashAreas.put("Area " + area.getNombre()+ " tiene estos Sectores libres " + ((HashMap<String, List<Sectores>>)(getAllSectoresDisponibles(area.getIdArea(), fechaDesde, fechaHasta))).get(_libres).size(), area);
+			
+		}
+		 
+		return null;
+	}
+	
 
 }
