@@ -27,7 +27,7 @@ public class Utilities {
 	}
 	
 	public static LocalDateTime getLocalDateTimeFromString(String localDateTimeString) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 		LocalDateTime localDateTime = LocalDateTime.parse(localDateTimeString, formatter);
 		return localDateTime;
 	}
