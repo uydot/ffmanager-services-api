@@ -1,10 +1,8 @@
 package com.services.api.ffmanager.utils;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.Period;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -14,9 +12,10 @@ import java.util.List;
 
 public class Utilities {
 
-	public static Date getDateTimeFromString(String dateTime) throws ParseException {
-		SimpleDateFormat formatter=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
-		return formatter.parse(dateTime);  
+	public static LocalDateTime getDateTimeFromString(String dateTimeString) throws ParseException {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+		LocalDateTime dateTime = LocalDateTime.parse(dateTimeString, formatter);
+		return dateTime;  
 	}
 	
 	public static Date getNowDate() {
@@ -53,9 +52,6 @@ public class Utilities {
 	
 	public static List<Integer> getHoras(LocalDateTime ldt1, LocalDateTime ldt2){
 		List<Integer> listaHoras = new ArrayList<Integer>();
-//		Period p = new Period(ldt1.get, getDateFromLocalDateTime(ldt2));
-//		int hours = p.getHours();
-//		int minutes = p.getMinutes();
 		
 		long hours = ldt1.until( ldt2, ChronoUnit.HOURS );
 

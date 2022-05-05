@@ -1,6 +1,7 @@
 package com.services.api.ffmanager.business;
 
 import java.time.Clock;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -47,7 +48,7 @@ public class ReservasServicesImpl implements ReservasServices {
 	}
 
 	@Override
-	public Collection<Sectores> getAllSectoresDisponibles(Integer idArea, Date fechaDesde, Date fechaHasta) {
+	public Collection<Sectores> getAllSectoresDisponibles(Integer idArea, LocalDateTime fechaDesde, LocalDateTime fechaHasta) {
 		Collection<Sectores> listResult = (Collection<Sectores>) reservasRepository.getAllSectoresDisponibles(idArea);
 		Collection<Sectores> sectores = new ArrayList<Sectores>();
 		for (Sectores o : listResult) {
@@ -75,9 +76,9 @@ public class ReservasServicesImpl implements ReservasServices {
 	}
 	
 	
-	private Collection<Sectores> getSectoresNoReservados(Collection<Sectores> sectores){
+	private Collection<Sectores> getSectoresNoReservados(Collection<Sectores> sectores, LocalDateTime fechaDesde, LocalDateTime fechaHasta){
 		Collection<Sectores> sectoresDisponibles = new ArrayList<Sectores>();
-		//List<Integer> listaHoras = Utilities.getHoras(null, null)
+		List<Integer> listaHoras = Utilities.getHoras(fechaDesde, fechaHasta);
 		for (Sectores s : sectores) {
 		
 		}
