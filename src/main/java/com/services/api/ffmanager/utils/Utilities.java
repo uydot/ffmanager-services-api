@@ -2,6 +2,7 @@ package com.services.api.ffmanager.utils;
 
 import java.text.ParseException;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -81,5 +82,13 @@ public class Utilities {
 		Instant instant = ldt.atZone(ZoneId.of("AGT")).toInstant();
 		Date date = Date.from(instant);
 		return date;
+	}
+	
+	/*
+	 * Devuelve el LocalDateTime de HOY a una hora específica
+	 */
+	public static LocalDateTime getDateTimeAt(int h, LocalDateTime ldt) {
+		return ldt.toLocalDate().atTime(h, 0);
+		
 	}
 }

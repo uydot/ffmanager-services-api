@@ -33,4 +33,6 @@ public interface ReservasServices {
 	
 	public abstract HashMap<String, Areas> getAllAreasDisponibles(Integer idComplejo, LocalDateTime fechaDesde, LocalDateTime fechaHasta);
 	
+	public abstract HashMap<String, String> getUsoDeHorasDeAreaSimple(Integer idArea, LocalDateTime fecha, Integer[] horas);
+	
 }

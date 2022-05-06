@@ -172,6 +172,36 @@ public class ReservasServicesImpl implements ReservasServices {
 		 
 		return hashAreas;
 	}
+
+	@Override
+	public HashMap<String, String> getUsoDeHorasDeAreaSimple(Integer idArea, LocalDateTime fecha, Integer[] horas) {
+		
+		Collection<Sectores> listResult = (Collection<Sectores>) reservasRepository.getAllSectoresDisponibles(idArea);
+		Sectores sectorResultado = null;
+		for (Sectores o : listResult) {//solo devuelve 1 sector
+			sectorResultado = o;
+			EstadosDeSectores ultimoEstado = getUltimoEstado(o.getEstadosDeSectores());
+			sectorResultado.setIdEstadoSector(ultimoEstado.getEstados().getIdEstado());	
+		}
+		return getHorasReservadas(sectorResultado, fecha, horas);
+	}
+	
+	
+	private HashMap<String, String>  getHorasReservadas(Sectores sector, LocalDateTime fecha, Integer[] horas){
+		HashMap<String,String> hashResultado = new HashMap<String, String>();
+		
+		for (int i = 0; i < horas.length; i++) {
+			
+			//Si devuelve el id del sector, entonces en ese rango de horas el sector esta ocupado
+			Integer id = reservasRepository.isOcupado(sector.getIdSector(), Utilities.getDateTimeAt(horas[i], fecha), Utilities.getDateTimeAt(horas[i+1], fecha));
+			if(id != null) {
+				hashResultado.put(""+horas[i] + "-" + horas[i+1], "ocupado");
+			}else {
+				hashResultado.put(""+horas[i] + "-" + horas[i+1], "libre");
+			}
+		}
+		return hashResultado;
+	}
 	
 
 }

@@ -17,5 +17,8 @@ public class AreasSimpleDTO {
 	private String idArea;
 	@JsonProperty("nombre")
 	private String nombre;
+	@JsonProperty("esCompuesta")
+	private boolean esCompuesta;
+
 	
 }

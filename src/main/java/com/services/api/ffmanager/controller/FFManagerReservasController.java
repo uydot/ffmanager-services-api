@@ -110,6 +110,37 @@ public class FFManagerReservasController {
 		return new ResponseEntity<>(listaDatosDTO, HttpStatus.OK);
 	}
 
+	@GetMapping(value = "/reservas/get-all-sectores-disponibles-area-simple/{idArea}/{fechaDesde}/{fechaHasta}")
+	public ResponseEntity<Object> getAllSectoresDisponiblesAreaSimple(@PathVariable("idArea") String idArea,
+			@PathVariable("fechaDesde") String fechaDesde, @PathVariable("fechaHasta") String fechaHasta) {
+
+		HashMap<String, List<Sectores>> datos = null;
+		try {
+			datos = reservasServices.getAllSectoresDisponibles(Integer.parseInt(idArea),
+					Utilities.getDateTimeFromString(fechaDesde), Utilities.getDateTimeFromString(fechaHasta));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		
+		List<SectoresSimpleDTO> listaDatosDTO = new ArrayList<SectoresSimpleDTO>();
+		
+		for (Sectores dato : datos.get(ReservasServices._libres)) {
+			SectoresSimpleDTO datoDTO = mapper.map(dato, SectoresSimpleDTO.class);
+			listaDatosDTO.add(datoDTO);
+		}
+		
+		for (Sectores dato : datos.get(ReservasServices._ocupados)) {
+			SectoresSimpleDTO datoDTO = mapper.map(dato, SectoresSimpleDTO.class);
+			listaDatosDTO.add(datoDTO);
+		}
+		
+		
+		return new ResponseEntity<>(listaDatosDTO, HttpStatus.OK);
+	}
+
+	
 	@PostMapping(value = "/reservas/reservar")
 	public ResponseEntity<Object> reservar(@RequestBody ReservaDeSectorTransferDTO dto) {
 
@@ -187,6 +218,7 @@ public class FFManagerReservasController {
 			        areaSimple.setDescripcion(key);
 			        areaSimple.setIdArea(""+hashAreas.get(key).getIdArea());
 			        areaSimple.setNombre(hashAreas.get(key).getNombre());
+			        areaSimple.setEsCompuesta(hashAreas.get(key).getTiposAreas().isEsCompuesta());
 			        listaAreas.add(areaSimple);
 			    }
 			}
