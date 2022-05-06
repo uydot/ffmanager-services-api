@@ -42,6 +42,8 @@ public class Sectores implements Serializable {
     private Areas areas;
     @OneToMany(mappedBy="sectores")
     private Set<ReservaDeSector> reservaDeSector;
+    
+    private Integer idEstadoSector;
 
     /** Default constructor. */
     public Sectores() {
@@ -209,6 +211,14 @@ public class Sectores implements Serializable {
     public void setReservaDeSector(Set<ReservaDeSector> aReservaDeSector) {
         reservaDeSector = aReservaDeSector;
     }
+
+	public Integer getIdEstadoSector() {
+		return idEstadoSector;
+	}
+
+	public void setIdEstadoSector(Integer idEstadoSector) {
+		this.idEstadoSector = idEstadoSector;
+	}
 
   
 }

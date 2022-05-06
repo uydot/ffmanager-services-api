@@ -23,13 +23,16 @@ import com.services.api.ffmanager.business.GeneralServices;
 import com.services.api.ffmanager.business.InstitucionalServices;
 import com.services.api.ffmanager.business.PerfilesServices;
 import com.services.api.ffmanager.business.ReservasServices;
+import com.services.api.ffmanager.domain.dto.AreasSimpleDTO;
 import com.services.api.ffmanager.domain.dto.EstadosDeSectoresSimpleDTO;
 import com.services.api.ffmanager.domain.dto.MaterialCantidadDTO;
 import com.services.api.ffmanager.domain.dto.ReservaDeSectorTransferDTO;
 import com.services.api.ffmanager.domain.dto.ReservasDTO;
 import com.services.api.ffmanager.domain.dto.ResultadoBusquedaSectoresDTO;
 import com.services.api.ffmanager.domain.dto.SectoresDTO;
+import com.services.api.ffmanager.domain.dto.SectoresSimpleDTO;
 import com.services.api.ffmanager.domain.entities.ActividadesDeReserva;
+import com.services.api.ffmanager.domain.entities.Areas;
 import com.services.api.ffmanager.domain.entities.MaterialesDeReserva;
 import com.services.api.ffmanager.domain.entities.ReservaDeSector;
 import com.services.api.ffmanager.domain.entities.Reservas;
@@ -78,24 +81,33 @@ public class FFManagerReservasController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		List<SectoresDTO> listaDatosLibresDTO = new ArrayList<SectoresDTO>();
-		List<SectoresDTO> listaDatosOcupadosDTO = new ArrayList<SectoresDTO>();
+		List<SectoresSimpleDTO> listaDatosLibresDTO = new ArrayList<SectoresSimpleDTO>();
+		List<SectoresSimpleDTO> listaDatosOcupadosDTO = new ArrayList<SectoresSimpleDTO>();
+		
+		List<SectoresSimpleDTO> listaDatosDTO = new ArrayList<SectoresSimpleDTO>();
 		
 		for (Sectores dato : datos.get(ReservasServices._libres)) {
-			SectoresDTO datoDTO = mapper.map(dato, SectoresDTO.class);
+			SectoresSimpleDTO datoDTO = mapper.map(dato, SectoresSimpleDTO.class);
 			listaDatosLibresDTO.add(datoDTO);
+			
+			//agrego para devolver una sola lista
+			listaDatosDTO.add(datoDTO);
 		}
 		
 		for (Sectores dato : datos.get(ReservasServices._ocupados)) {
-			SectoresDTO datoDTO = mapper.map(dato, SectoresDTO.class);
+			SectoresSimpleDTO datoDTO = mapper.map(dato, SectoresSimpleDTO.class);
 			listaDatosOcupadosDTO.add(datoDTO);
+			
+			//agrego para devolver una sola lista
+			
+			listaDatosDTO.add(datoDTO);
 		}
 		
 		ResultadoBusquedaSectoresDTO resultDTO = new ResultadoBusquedaSectoresDTO();
 		resultDTO.setListaDatosLibresDTO(listaDatosLibresDTO);
 		resultDTO.setListaDatosOcupadosDTO(listaDatosOcupadosDTO);
 		
-		return new ResponseEntity<>(resultDTO, HttpStatus.OK);
+		return new ResponseEntity<>(listaDatosDTO, HttpStatus.OK);
 	}
 
 	@PostMapping(value = "/reservas/reservar")
@@ -157,4 +169,37 @@ public class FFManagerReservasController {
 		return new ResponseEntity<>("Estado del sector is created successsfully", HttpStatus.OK);
 		
 	}
+	
+	@GetMapping(value = "/reservas/get-all-areas-disponibles/{idComplejo}/{fechaDesde}/{fechaHasta}")
+	public ResponseEntity<Object> getAllAreasDisponibles(@PathVariable("idComplejo") String idComplejo,
+			@PathVariable("fechaDesde") String fechaDesde, @PathVariable("fechaHasta") String fechaHasta) {
+		
+		HashMap<String, Areas> hashAreas;
+		List<AreasSimpleDTO> listaAreas = new ArrayList<AreasSimpleDTO>();
+		try {
+			hashAreas = reservasServices.getAllAreasDisponibles(Integer.parseInt(idComplejo), 
+						Utilities.getDateTimeFromString(fechaDesde), Utilities.getDateTimeFromString(fechaHasta));
+			
+			AreasSimpleDTO areaSimple = null;
+			if(hashAreas != null) {
+				for (String key : hashAreas.keySet()) {   
+					areaSimple = new AreasSimpleDTO();
+			        areaSimple.setDescripcion(key);
+			        areaSimple.setIdArea(""+hashAreas.get(key).getIdArea());
+			        areaSimple.setNombre(hashAreas.get(key).getNombre());
+			        listaAreas.add(areaSimple);
+			    }
+			}
+			
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return new ResponseEntity<>(listaAreas, HttpStatus.OK);
+	}
+	
 }

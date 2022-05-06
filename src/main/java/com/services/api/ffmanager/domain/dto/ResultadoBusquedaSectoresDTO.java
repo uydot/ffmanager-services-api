@@ -14,8 +14,8 @@ import lombok.ToString;
 public class ResultadoBusquedaSectoresDTO {
 
 	@JsonProperty("sectores-libres")
-	private List<SectoresDTO> listaDatosLibresDTO;
+	private List<SectoresSimpleDTO> listaDatosLibresDTO;
 	@JsonProperty("sectores-ocupados")
-	private List<SectoresDTO> listaDatosOcupadosDTO;
+	private List<SectoresSimpleDTO> listaDatosOcupadosDTO;
 	
 }

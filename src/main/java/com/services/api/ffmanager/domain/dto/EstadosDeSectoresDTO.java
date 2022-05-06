@@ -20,7 +20,7 @@ public class EstadosDeSectoresDTO {
 	@JsonProperty("estados")
 	private EstadosDTO estados;
 	@JsonProperty("sector")
-	private SectoresDTO sectores;
+	private SectoresSimpleDTO sectores;
 	
 
 }

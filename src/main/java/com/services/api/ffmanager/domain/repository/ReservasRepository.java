@@ -2,6 +2,7 @@ package com.services.api.ffmanager.domain.repository;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -20,7 +21,7 @@ public interface ReservasRepository extends JpaRepository<Reservas, Integer> {
 	 */
 	//@Query(value = "select s.id_sector, s.nombre, s.observaciones, s.tamaño, s.fk_id_area, s.es_sector_golero, s.numero_sector FROM sectores s, areas a WHERE s.fk_id_area = a.id_area AND a.id_area = :idArea " , nativeQuery=true)
 	@Query("select s from sectores s where s.areas.idArea = :idArea")
-	public Collection<Sectores> getAllSectoresDisponibles(@Param("idArea") Integer idArea);
+	public Set<Sectores> getAllSectoresDisponibles(@Param("idArea") Integer idArea);
 	
 	@Query(value = "select r.id_reserva from ffmanager.reservas r, ffmanager.reserva_de_sector rds, ffmanager.sectores s where r.id_reserva = rds.fk_id_reserva and rds.fk_id_sector = s.id_sector and s.id_sector = :idSector and r.fecha_desde < :fechaHasta and r.fecha_hasta > :fechaDesde\r\n", nativeQuery=true)
 	public Integer isOcupado(@Param("idSector")Integer idSector, @Param("fechaDesde") LocalDateTime fechaDesde, @Param("fechaHasta") LocalDateTime fechaHasta);

@@ -7,7 +7,6 @@ import java.util.List;
 
 import com.services.api.ffmanager.domain.entities.ActividadesDeReserva;
 import com.services.api.ffmanager.domain.entities.Areas;
-import com.services.api.ffmanager.domain.entities.Estados;
 import com.services.api.ffmanager.domain.entities.MaterialesDeReserva;
 import com.services.api.ffmanager.domain.entities.ReservaDeSector;
 import com.services.api.ffmanager.domain.entities.Reservas;

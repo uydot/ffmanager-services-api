@@ -9,12 +9,13 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class EstadosDeSectoresSimpleDTO {
-	
-	
-	@JsonProperty("idEstado")
-	private String estado;
-	@JsonProperty("idSector")
-	private String sector;
+public class AreasSimpleDTO {
 
+	@JsonProperty("descripcion")
+	private String descripcion;
+	@JsonProperty("idArea")
+	private String idArea;
+	@JsonProperty("nombre")
+	private String nombre;
+	
 }

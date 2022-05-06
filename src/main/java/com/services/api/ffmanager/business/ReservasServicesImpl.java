@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -69,10 +70,14 @@ public class ReservasServicesImpl implements ReservasServices {
 		Collection<Sectores> listResult = (Collection<Sectores>) reservasRepository.getAllSectoresDisponibles(idArea);
 		Collection<Sectores> sectores = new ArrayList<Sectores>();
 		for (Sectores o : listResult) {
-			Set<EstadosDeSectores> ultimoEstadoEnLista = new LinkedHashSet<EstadosDeSectores>();
+			Set<EstadosDeSectores> ultimoEstadoEnLista = new HashSet<EstadosDeSectores>();
 			EstadosDeSectores ultimoEstado = getUltimoEstado(o.getEstadosDeSectores());
-			ultimoEstadoEnLista.add(ultimoEstado);
-			o.setEstadosDeSectores(ultimoEstadoEnLista);
+			if(ultimoEstado != null) {
+				ultimoEstadoEnLista.add(ultimoEstado);
+				o.setEstadosDeSectores(ultimoEstadoEnLista);
+				o.setIdEstadoSector(ultimoEstado.getEstados().getIdEstado());
+			}
+			
 			sectores.add(o);		
 		}
 			
@@ -161,11 +166,11 @@ public class ReservasServicesImpl implements ReservasServices {
 		HashMap<String, Areas> hashAreas = new HashMap<String, Areas>();
 		
 		for (Areas area : complejo.getAreas()) {
-			hashAreas.put("Area " + area.getNombre()+ " tiene estos Sectores libres " + ((HashMap<String, List<Sectores>>)(getAllSectoresDisponibles(area.getIdArea(), fechaDesde, fechaHasta))).get(_libres).size(), area);
+			hashAreas.put("Area " + area.getIdArea()+ " tiene estos Sectores libres " + ((HashMap<String, List<Sectores>>)(getAllSectoresDisponibles(area.getIdArea(), fechaDesde, fechaHasta))).get(_libres).size(), area);
 			
 		}
 		 
-		return null;
+		return hashAreas;
 	}
 	
 
