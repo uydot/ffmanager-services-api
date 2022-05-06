@@ -3,11 +3,8 @@ package com.services.api.ffmanager.controller;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
-import org.modelmapper.PropertyMap;
-import org.modelmapper.TypeMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,28 +18,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.services.api.ffmanager.business.InstitucionalServices;
-import com.services.api.ffmanager.business.PerfilesServices;
 import com.services.api.ffmanager.domain.dto.AreasDTO;
-import com.services.api.ffmanager.domain.dto.CargosDTO;
 import com.services.api.ffmanager.domain.dto.ComplejosDTO;
 import com.services.api.ffmanager.domain.dto.DatosInstitucionDeportivaDTO;
-import com.services.api.ffmanager.domain.dto.ItemsMenuDTO;
-import com.services.api.ffmanager.domain.dto.PerfilesDTO;
 import com.services.api.ffmanager.domain.dto.SectoresDTO;
 import com.services.api.ffmanager.domain.dto.TiposAreasDTO;
-import com.services.api.ffmanager.domain.dto.UsuariosDTO;
 import com.services.api.ffmanager.domain.entities.Areas;
-import com.services.api.ffmanager.domain.entities.Cargos;
 import com.services.api.ffmanager.domain.entities.Complejos;
 import com.services.api.ffmanager.domain.entities.DatosInstitucionDeportiva;
-import com.services.api.ffmanager.domain.entities.ItemsMenu;
-import com.services.api.ffmanager.domain.entities.Perfiles;
 import com.services.api.ffmanager.domain.entities.Sectores;
 import com.services.api.ffmanager.domain.entities.TiposAreas;
-import com.services.api.ffmanager.domain.entities.Usuarios;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -101,8 +87,28 @@ public class FFManagerController {
 	public ResponseEntity<Object> updateDatosInstitucionDeportiva(@PathVariable("id") String id,
 			@RequestBody DatosInstitucionDeportivaDTO dto) {
 
-		institucionalServices.updateDatosInstitucionDeportiva(mapper.map(dto, DatosInstitucionDeportiva.class));
-		return new ResponseEntity<>("Institucion Deportiva is updated successsfully", HttpStatus.OK);
+		var s = institucionalServices.getOneDatosInstitucionDeportiva(""+dto.getIdDatosInstitucionDeportiva());
+		if(s.isPresent()) {
+			DatosInstitucionDeportiva sUpdate = mapper.map(dto, DatosInstitucionDeportiva.class);
+			if(sUpdate.getNombre()!= null) {
+				s.get().setNombre(sUpdate.getNombre());
+			}
+			if(sUpdate.getDireccion()!= null) {
+				s.get().setDireccion(sUpdate.getDireccion());
+			}
+			if(sUpdate.getObservaciones()!= null) {
+				s.get().setObservaciones(sUpdate.getObservaciones());
+			}
+			if(sUpdate.getTelefonoContacto()!= null) {
+				s.get().setTelefonoContacto(sUpdate.getTelefonoContacto());
+			}
+			
+			institucionalServices.updateDatosInstitucionDeportiva(s.get());
+			
+			return new ResponseEntity<>("Institucion Deportiva is updated successsfully", HttpStatus.OK);
+		}else {
+			return new ResponseEntity<>("Institucion Deportiva is not updated", HttpStatus.NOT_FOUND);
+		}
 	}
 
 	@RequestMapping(value = "/instituciones-deportivas/delete/{id}", method = RequestMethod.DELETE)
@@ -169,8 +175,27 @@ public class FFManagerController {
 	@RequestMapping(value = "/complejos/update/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<Object> updateComplejos(@PathVariable("id") String id, @RequestBody ComplejosDTO dto) {
 
-		institucionalServices.updateComplejos(mapper.map(dto, Complejos.class));
-		return new ResponseEntity<>("Complejo is updated successsfully", HttpStatus.OK);
+		var s = institucionalServices.getOneComplejos(""+dto.getIdComplejo());
+		
+		if(s.isPresent()) {
+			Complejos sUpdate = mapper.map(dto, Complejos.class);
+			
+			if(sUpdate.getNombre()!= null) {
+				s.get().setNombre(sUpdate.getNombre());
+			}
+			if(sUpdate.getDireccion()!= null) {
+				s.get().setDireccion(sUpdate.getDireccion());
+			}
+			if(sUpdate.getTelefonoContacto()!= null) {
+				s.get().setTelefonoContacto(sUpdate.getTelefonoContacto());
+			}
+			
+			institucionalServices.updateComplejos(s.get());
+			
+			return new ResponseEntity<>("Complejo is updated successsfully", HttpStatus.OK);
+		}else {
+			return new ResponseEntity<>("Complejo is not updated", HttpStatus.NOT_FOUND);
+		}
 	}
 
 	@RequestMapping(value = "/complejos/delete/{id}", method = RequestMethod.DELETE)
@@ -237,8 +262,23 @@ public class FFManagerController {
 	@RequestMapping(value = "/areas/update/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<Object> updateAreas(@PathVariable("id") String id, @RequestBody AreasDTO dto) {
 
-		institucionalServices.updateAreas(mapper.map(dto, Areas.class));
-		return new ResponseEntity<>("Area is updated successsfully", HttpStatus.OK);
+		var s = institucionalServices.getOneAreas(""+dto.getIdArea());
+		if(s.isPresent()) {
+			
+			Areas sUpdate = mapper.map(dto, Areas.class);
+			if(sUpdate.getNombre()!= null) {
+				s.get().setNombre(sUpdate.getNombre());
+			}
+			if(sUpdate.getObservaciones()!= null) {
+				s.get().setObservaciones(sUpdate.getObservaciones());
+			}	
+			
+			institucionalServices.updateAreas(s.get());
+			
+			return new ResponseEntity<>("Area is updated successsfully", HttpStatus.OK);
+		}else {
+			return new ResponseEntity<>("Area is not updated", HttpStatus.NOT_FOUND);
+		}
 	}
 
 	@RequestMapping(value = "/areas/delete/{id}", method = RequestMethod.DELETE)
@@ -356,8 +396,35 @@ public class FFManagerController {
 	@RequestMapping(value = "/sectores/update/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<Object> updateSectores(@PathVariable("id") String id, @RequestBody SectoresDTO dto) {
 
-		institucionalServices.updateSectores(mapper.map(dto, Sectores.class));
-		return new ResponseEntity<>("Sector is updated successsfully", HttpStatus.OK);
+		var s = institucionalServices.getOneSectores(""+dto.getIdSector());
+		if(s.isPresent()) {
+			
+			Sectores sUpdate = mapper.map(dto, Sectores.class);
+			
+			if(sUpdate.getNombre()!= null) {
+				s.get().setNombre(sUpdate.getNombre());
+			}
+			if(sUpdate.getNumeroSector() != null) {
+				s.get().setNumeroSector(sUpdate.getNumeroSector());
+			}
+			if(sUpdate.getObservaciones()!= null) {
+				s.get().setObservaciones(sUpdate.getObservaciones());
+			}
+			if(sUpdate.getTamano()!= null) {
+				s.get().setTamano(sUpdate.getTamano());
+			}
+			if(sUpdate.isEsSectorGolero() != null) {
+				s.get().setEsSectorGolero(sUpdate.isEsSectorGolero());
+			}
+			
+
+			institucionalServices.updateSectores(s.get());
+			
+			return new ResponseEntity<>("Sector is updated successsfully", HttpStatus.OK);
+		}else {
+			return new ResponseEntity<>("Sector is not updated", HttpStatus.NOT_FOUND);
+		}
+		
 	}
 
 	@RequestMapping(value = "/sectores/delete/{id}", method = RequestMethod.DELETE)

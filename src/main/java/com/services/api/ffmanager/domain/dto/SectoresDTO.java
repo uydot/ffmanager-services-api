@@ -27,11 +27,11 @@ public class SectoresDTO {
 	@JsonProperty("observaciones")
 	private String observaciones;
 	@JsonProperty("tamano")
-	private double tamano;
+	private Double tamano;
 	@JsonProperty("esSectorGolero")
-	private boolean esSectorGolero;
+	private Boolean esSectorGolero;
 	@JsonProperty("numeroSector")
-	private int numeroSector;
+	private Integer numeroSector;
 	//@JsonBackReference
 	@JsonProperty("areas")
 	private AreasDTO areasDTO;

@@ -30,11 +30,11 @@ public class Sectores implements Serializable {
     @Column(length=255)
     private String observaciones;
     @Column(name="tamaño", precision=22)
-    private double tamano;
+    private Double tamano;
     @Column(name="es_sector_golero", nullable=false, length=1)
-    private boolean esSectorGolero;
+    private Boolean esSectorGolero;
     @Column(name="numero_sector", nullable=false, precision=10)
-    private int numeroSector;
+    private Integer numeroSector;
     @OneToMany(mappedBy="sectores")
     private Set<EstadosDeSectores> estadosDeSectores;
     @ManyToOne(optional=false)
@@ -109,7 +109,7 @@ public class Sectores implements Serializable {
      *
      * @return the current value of tamano
      */
-    public double getTamano() {
+    public Double getTamano() {
         return tamano;
     }
 
@@ -118,7 +118,7 @@ public class Sectores implements Serializable {
      *
      * @param aTamano the new value for tamano
      */
-    public void setTamano(double aTamano) {
+    public void setTamano(Double aTamano) {
         tamano = aTamano;
     }
 
@@ -127,7 +127,7 @@ public class Sectores implements Serializable {
      *
      * @return true if and only if esSectorGolero is currently true
      */
-    public boolean isEsSectorGolero() {
+    public Boolean isEsSectorGolero() {
         return esSectorGolero;
     }
 
@@ -136,7 +136,7 @@ public class Sectores implements Serializable {
      *
      * @param aEsSectorGolero the new value for esSectorGolero
      */
-    public void setEsSectorGolero(boolean aEsSectorGolero) {
+    public void setEsSectorGolero(Boolean aEsSectorGolero) {
         esSectorGolero = aEsSectorGolero;
     }
 
@@ -145,7 +145,7 @@ public class Sectores implements Serializable {
      *
      * @return the current value of numeroSector
      */
-    public int getNumeroSector() {
+    public Integer getNumeroSector() {
         return numeroSector;
     }
 
@@ -154,7 +154,7 @@ public class Sectores implements Serializable {
      *
      * @param aNumeroSector the new value for numeroSector
      */
-    public void setNumeroSector(int aNumeroSector) {
+    public void setNumeroSector(Integer aNumeroSector) {
         numeroSector = aNumeroSector;
     }
 
