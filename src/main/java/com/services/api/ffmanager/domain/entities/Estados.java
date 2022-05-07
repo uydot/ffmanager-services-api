@@ -33,8 +33,18 @@ public class Estados implements Serializable {
     private Set<EstadosDeAreas> estadosDeAreas;
     @OneToMany(mappedBy="estados")
     private Set<EstadosDeSectores> estadosDeSectores;
+    @Column(name="color")
+    private String color;
 
-    /** Default constructor. */
+    public String getColor() {
+		return color;
+	}
+
+	public void setColor(String color) {
+		this.color = color;
+	}
+
+	/** Default constructor. */
     public Estados() {
         super();
     }

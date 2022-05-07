@@ -69,7 +69,7 @@ public class FFManagerReservasController {
 		this.perfilesServices = perfilesServices;
 	}
 
-	@GetMapping(value = "/reservas/get-all-sectores-disponibles/{idArea}/{fechaDesde}/{fechaHasta}")
+	@GetMapping(value = "/reservas/get-all-sectores-disponibles-de-area-compuesta/{idArea}/{fechaDesde}/{fechaHasta}")
 	public ResponseEntity<Object> getAllSectoresDisponibles(@PathVariable("idArea") String idArea,
 			@PathVariable("fechaDesde") String fechaDesde, @PathVariable("fechaHasta") String fechaHasta) {
 
@@ -110,34 +110,20 @@ public class FFManagerReservasController {
 		return new ResponseEntity<>(listaDatosDTO, HttpStatus.OK);
 	}
 
-	@GetMapping(value = "/reservas/get-all-sectores-disponibles-area-simple/{idArea}/{fechaDesde}/{fechaHasta}")
+	@GetMapping(value = "/reservas/get-all-sectores-disponibles-de-area-simple/{idArea}/{fecha}/{horas}")
 	public ResponseEntity<Object> getAllSectoresDisponiblesAreaSimple(@PathVariable("idArea") String idArea,
-			@PathVariable("fechaDesde") String fechaDesde, @PathVariable("fechaHasta") String fechaHasta) {
+			@PathVariable("fecha") String fecha, @PathVariable("horas") String[] horas) {
 
-		HashMap<String, List<Sectores>> datos = null;
+		HashMap<String, String> datos = null;
 		try {
-			datos = reservasServices.getAllSectoresDisponibles(Integer.parseInt(idArea),
-					Utilities.getDateTimeFromString(fechaDesde), Utilities.getDateTimeFromString(fechaHasta));
+			datos = reservasServices.getUsoDeHorasDeAreaSimple(Integer.parseInt(idArea),
+					Utilities.getDateTimeFromString(fecha), horas);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		
-		List<SectoresSimpleDTO> listaDatosDTO = new ArrayList<SectoresSimpleDTO>();
-		
-		for (Sectores dato : datos.get(ReservasServices._libres)) {
-			SectoresSimpleDTO datoDTO = mapper.map(dato, SectoresSimpleDTO.class);
-			listaDatosDTO.add(datoDTO);
-		}
-		
-		for (Sectores dato : datos.get(ReservasServices._ocupados)) {
-			SectoresSimpleDTO datoDTO = mapper.map(dato, SectoresSimpleDTO.class);
-			listaDatosDTO.add(datoDTO);
-		}
-		
-		
-		return new ResponseEntity<>(listaDatosDTO, HttpStatus.OK);
+		return new ResponseEntity<>(datos, HttpStatus.OK);
 	}
 
 	

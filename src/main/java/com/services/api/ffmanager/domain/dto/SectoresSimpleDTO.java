@@ -27,5 +27,10 @@ public class SectoresSimpleDTO {
 	private int numeroSector;
 	@JsonProperty("idEstado")
 	private Integer idEstadoSector;
+	@JsonProperty("disponible")
+	private boolean sePuedeUtilizar;
+	@JsonProperty("color")
+	private String color;
+	
 
 }

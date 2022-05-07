@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -76,6 +77,11 @@ public class ReservasServicesImpl implements ReservasServices {
 				ultimoEstadoEnLista.add(ultimoEstado);
 				o.setEstadosDeSectores(ultimoEstadoEnLista);
 				o.setIdEstadoSector(ultimoEstado.getEstados().getIdEstado());
+				o.setColor(ultimoEstado.getEstados().getColor());
+				o.setSePuedeUtilizar(ultimoEstado.getEstados().isPermiteUsar());
+			}else {
+				o.setColor(_colorDefecto);
+				o.setSePuedeUtilizar(true);
 			}
 			
 			sectores.add(o);		
@@ -174,26 +180,34 @@ public class ReservasServicesImpl implements ReservasServices {
 	}
 
 	@Override
-	public HashMap<String, String> getUsoDeHorasDeAreaSimple(Integer idArea, LocalDateTime fecha, Integer[] horas) {
+	public HashMap<String, String> getUsoDeHorasDeAreaSimple(Integer idArea, LocalDateTime fecha, String[] horas) {
 		
 		Collection<Sectores> listResult = (Collection<Sectores>) reservasRepository.getAllSectoresDisponibles(idArea);
 		Sectores sectorResultado = null;
 		for (Sectores o : listResult) {//solo devuelve 1 sector
 			sectorResultado = o;
 			EstadosDeSectores ultimoEstado = getUltimoEstado(o.getEstadosDeSectores());
-			sectorResultado.setIdEstadoSector(ultimoEstado.getEstados().getIdEstado());	
+			if(ultimoEstado != null) {
+				sectorResultado.setIdEstadoSector(ultimoEstado.getEstados().getIdEstado());	
+				o.setColor(ultimoEstado.getEstados().getColor());
+				o.setSePuedeUtilizar(ultimoEstado.getEstados().isPermiteUsar());
+			}else {
+				o.setColor(_colorDefecto);
+				o.setSePuedeUtilizar(true);
+			}
+			
 		}
 		return getHorasReservadas(sectorResultado, fecha, horas);
 	}
 	
 	
-	private HashMap<String, String>  getHorasReservadas(Sectores sector, LocalDateTime fecha, Integer[] horas){
-		HashMap<String,String> hashResultado = new HashMap<String, String>();
+	private HashMap<String, String>  getHorasReservadas(Sectores sector, LocalDateTime fecha, String[] horas){
+		HashMap<String,String> hashResultado = new LinkedHashMap<String, String>();
 		
-		for (int i = 0; i < horas.length; i++) {
+		for (int i = 0; i < horas.length-1; i++) {
 			
 			//Si devuelve el id del sector, entonces en ese rango de horas el sector esta ocupado
-			Integer id = reservasRepository.isOcupado(sector.getIdSector(), Utilities.getDateTimeAt(horas[i], fecha), Utilities.getDateTimeAt(horas[i+1], fecha));
+			Integer id = reservasRepository.isOcupado(sector.getIdSector(), Utilities.getDateTimeAt(Integer.parseInt(horas[i]), fecha), Utilities.getDateTimeAt(Integer.parseInt(horas[i+1]), fecha));
 			if(id != null) {
 				hashResultado.put(""+horas[i] + "-" + horas[i+1], "ocupado");
 			}else {

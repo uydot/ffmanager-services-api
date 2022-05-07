@@ -44,6 +44,10 @@ public class Sectores implements Serializable {
     private Set<ReservaDeSector> reservaDeSector;
     
     private Integer idEstadoSector;
+    
+    private Boolean sePuedeUtilizar;
+    
+    private String color;
 
     /** Default constructor. */
     public Sectores() {
@@ -218,6 +222,22 @@ public class Sectores implements Serializable {
 
 	public void setIdEstadoSector(Integer idEstadoSector) {
 		this.idEstadoSector = idEstadoSector;
+	}
+
+	public String getColor() {
+		return color;
+	}
+
+	public void setColor(String color) {
+		this.color = color;
+	}
+
+	public Boolean getSePuedeUtilizar() {
+		return sePuedeUtilizar;
+	}
+
+	public void setSePuedeUtilizar(Boolean sePuedeUtilizar) {
+		this.sePuedeUtilizar = sePuedeUtilizar;
 	}
 
   

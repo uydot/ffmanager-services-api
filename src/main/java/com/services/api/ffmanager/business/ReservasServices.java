@@ -16,6 +16,7 @@ public interface ReservasServices {
 
 	public static String _libres = "sectores_libres";
 	public static String _ocupados = "sectores_ocupados";
+	public static String _colorDefecto = "#008000";
 	
 	public abstract HashMap<String, List<Sectores>> getAllSectoresDisponibles(Integer idArea, LocalDateTime fechaDesde, LocalDateTime fechaHasta);
 	
@@ -33,6 +34,6 @@ public interface ReservasServices {
 	
 	public abstract HashMap<String, Areas> getAllAreasDisponibles(Integer idComplejo, LocalDateTime fechaDesde, LocalDateTime fechaHasta);
 	
-	public abstract HashMap<String, String> getUsoDeHorasDeAreaSimple(Integer idArea, LocalDateTime fecha, Integer[] horas);
+	public abstract HashMap<String, String> getUsoDeHorasDeAreaSimple(Integer idArea, LocalDateTime fecha, String[] horas);
 	
 }
