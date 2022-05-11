@@ -36,4 +36,5 @@ public interface ReservasServices {
 	
 	public abstract HashMap<String, String> getUsoDeHorasDeAreaSimple(Integer idArea, LocalDateTime fecha, String[] horas);
 	
+	public abstract HashMap<Integer, Integer> getStockMaterialesPorReserva(LocalDateTime fechaDesde,LocalDateTime fechaHasta);
 }

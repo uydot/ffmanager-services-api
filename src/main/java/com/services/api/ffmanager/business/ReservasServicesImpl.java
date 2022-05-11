@@ -1,12 +1,14 @@
 package com.services.api.ffmanager.business;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -18,6 +20,7 @@ import com.services.api.ffmanager.domain.entities.Areas;
 import com.services.api.ffmanager.domain.entities.Complejos;
 import com.services.api.ffmanager.domain.entities.Estados;
 import com.services.api.ffmanager.domain.entities.EstadosDeSectores;
+import com.services.api.ffmanager.domain.entities.Materiales;
 import com.services.api.ffmanager.domain.entities.MaterialesDeReserva;
 import com.services.api.ffmanager.domain.entities.ReservaDeSector;
 import com.services.api.ffmanager.domain.entities.Reservas;
@@ -28,6 +31,7 @@ import com.services.api.ffmanager.domain.repository.ComplejosRepository;
 import com.services.api.ffmanager.domain.repository.EstadosDeSectoresRepository;
 import com.services.api.ffmanager.domain.repository.EstadosRepository;
 import com.services.api.ffmanager.domain.repository.MaterialesDeReservaRepository;
+import com.services.api.ffmanager.domain.repository.MaterialesRepository;
 import com.services.api.ffmanager.domain.repository.ReservaDeSectorRepository;
 import com.services.api.ffmanager.domain.repository.ReservasRepository;
 import com.services.api.ffmanager.domain.repository.SectoresRepository;
@@ -45,16 +49,16 @@ public class ReservasServicesImpl implements ReservasServices {
 	EstadosRepository estadosRepository;
 	AreasRepository areasRepository;
 	ComplejosRepository complejosRepository;
+	MaterialesRepository materialesRepository;
 
 	@Autowired
 	public ReservasServicesImpl(SectoresRepository sectoresRepository, ReservasRepository reservasRepository,
 			ReservaDeSectorRepository reservaDeSectorRepository,
 			MaterialesDeReservaRepository materialesDeReservaRepository,
 			ActividadesDeReservaRepository actividadesDeReservaRepository,
-			EstadosDeSectoresRepository estadoDeSectorRepository,
-			EstadosRepository estadosRepository,
-			AreasRepository areasRepository,
-			ComplejosRepository complejosRepository) {
+			EstadosDeSectoresRepository estadoDeSectorRepository, EstadosRepository estadosRepository,
+			AreasRepository areasRepository, ComplejosRepository complejosRepository,
+			MaterialesRepository materialesRepository) {
 		this.reservasRepository = reservasRepository;
 		this.sectoresRepository = sectoresRepository;
 		this.reservaDeSectorRepository = reservaDeSectorRepository;
@@ -64,66 +68,69 @@ public class ReservasServicesImpl implements ReservasServices {
 		this.estadosRepository = estadosRepository;
 		this.areasRepository = areasRepository;
 		this.complejosRepository = complejosRepository;
+		this.materialesRepository = materialesRepository;
 	}
 
 	@Override
-	public HashMap<String, List<Sectores>> getAllSectoresDisponibles(Integer idArea, LocalDateTime fechaDesde, LocalDateTime fechaHasta) {
+	public HashMap<String, List<Sectores>> getAllSectoresDisponibles(Integer idArea, LocalDateTime fechaDesde,
+			LocalDateTime fechaHasta) {
 		Collection<Sectores> listResult = (Collection<Sectores>) reservasRepository.getAllSectoresDisponibles(idArea);
 		Collection<Sectores> sectores = new ArrayList<Sectores>();
 		for (Sectores o : listResult) {
 			Set<EstadosDeSectores> ultimoEstadoEnLista = new HashSet<EstadosDeSectores>();
 			EstadosDeSectores ultimoEstado = getUltimoEstado(o.getEstadosDeSectores());
-			if(ultimoEstado != null) {
+			if (ultimoEstado != null) {
 				ultimoEstadoEnLista.add(ultimoEstado);
 				o.setEstadosDeSectores(ultimoEstadoEnLista);
 				o.setIdEstadoSector(ultimoEstado.getEstados().getIdEstado());
 				o.setColor(ultimoEstado.getEstados().getColor());
 				o.setSePuedeUtilizar(ultimoEstado.getEstados().isPermiteUsar());
-			}else {
+			} else {
 				o.setColor(_colorDefecto);
 				o.setSePuedeUtilizar(true);
 			}
-			
-			sectores.add(o);		
+
+			sectores.add(o);
 		}
-			
+
 		return getSectoresReservados(sectores, fechaDesde, fechaHasta);
 	}
 
-	//Devuelve el estado ultimo del sector
+	// Devuelve el estado ultimo del sector
 	private EstadosDeSectores getUltimoEstado(Collection<EstadosDeSectores> estados) {
-		if(estados != null && !estados.isEmpty()) {
-			EstadosDeSectores result = estados.iterator().next();//Me quedo con el primer estado
-			for (EstadosDeSectores estadosDeSectores : estados) {	
-				if(Utilities.compareLocalDateTime(estadosDeSectores.getFechaAsignado() , result.getFechaAsignado()) > 0 ) {//Comparo las fechas, y me quedo con el mas nuevo
+		if (estados != null && !estados.isEmpty()) {
+			EstadosDeSectores result = estados.iterator().next();// Me quedo con el primer estado
+			for (EstadosDeSectores estadosDeSectores : estados) {
+				if (Utilities.compareLocalDateTime(estadosDeSectores.getFechaAsignado(),
+						result.getFechaAsignado()) > 0) {// Comparo las fechas, y me quedo con el mas nuevo
 					result = estadosDeSectores;
 				}
 			}
 			return result;
 		}
-		return null;		
+		return null;
 	}
-	
-	
-	private HashMap<String, List<Sectores>>  getSectoresReservados(Collection<Sectores> sectores, LocalDateTime fechaDesde, LocalDateTime fechaHasta){
+
+	private HashMap<String, List<Sectores>> getSectoresReservados(Collection<Sectores> sectores,
+			LocalDateTime fechaDesde, LocalDateTime fechaHasta) {
 		HashMap<String, List<Sectores>> hashResultado = new HashMap<String, List<Sectores>>();
 		List<Sectores> sectoresOcupados = new ArrayList<Sectores>();
 		List<Sectores> sectoresLibres = new ArrayList<Sectores>();
 		for (Sectores s : sectores) {
 			Integer id = reservasRepository.isOcupado(s.getIdSector(), fechaDesde, fechaHasta);
-			if(id != null) {//Si devuelve el id del sector, entonces en ese rango de horas el sector esta ocupado
+			if (id != null) {// Si devuelve el id del sector, entonces en ese rango de horas el sector esta
+								// ocupado
 				sectoresOcupados.add(s);
-			}else {
+			} else {
 				sectoresLibres.add(s);
 			}
 		}
 		hashResultado.put(_libres, sectoresLibres);
 		hashResultado.put(_ocupados, sectoresOcupados);
-		
+
 		return hashResultado;
 	}
-	
-	
+
 	@Override
 	public void seleccionarSectores(Collection<Reservas> reservas) {
 		// TODO Auto-generated method stub
@@ -151,71 +158,95 @@ public class ReservasServicesImpl implements ReservasServices {
 
 	@Override
 	public void setEstadoSector(Integer sector, Integer estado) {
-		
+
 		Sectores s = sectoresRepository.getById(sector);
 		Estados e = estadosRepository.getById(estado);
 		EstadosDeSectores eds = new EstadosDeSectores();
 		eds.setEstados(e);
 		eds.setSectores(s);
 		eds.setFechaAsignado(Utilities.getNowLocalDateTime());
-		
+
 		estadoDeSectorRepository.save(eds);
-		
+
 	}
 
 	@Override
 	public HashMap<String, Areas> getAllAreasDisponibles(Integer idComplejo, LocalDateTime fechaDesde,
 			LocalDateTime fechaHasta) {
-		
+
 		Complejos complejo = complejosRepository.getById(idComplejo);
-		
+
 		HashMap<String, Areas> hashAreas = new HashMap<String, Areas>();
-		
+
 		for (Areas area : complejo.getAreas()) {
-			hashAreas.put("Area " + area.getIdArea()+ " tiene estos Sectores libres " + ((HashMap<String, List<Sectores>>)(getAllSectoresDisponibles(area.getIdArea(), fechaDesde, fechaHasta))).get(_libres).size(), area);
-			
+			hashAreas.put("Area " + area.getIdArea() + " tiene estos Sectores libres "
+					+ ((HashMap<String, List<Sectores>>) (getAllSectoresDisponibles(area.getIdArea(), fechaDesde,
+							fechaHasta))).get(_libres).size(),
+					area);
+
 		}
-		 
+
 		return hashAreas;
 	}
 
 	@Override
 	public HashMap<String, String> getUsoDeHorasDeAreaSimple(Integer idArea, LocalDateTime fecha, String[] horas) {
-		
+
 		Collection<Sectores> listResult = (Collection<Sectores>) reservasRepository.getAllSectoresDisponibles(idArea);
 		Sectores sectorResultado = null;
-		for (Sectores o : listResult) {//solo devuelve 1 sector
+		for (Sectores o : listResult) {// solo devuelve 1 sector
 			sectorResultado = o;
 			EstadosDeSectores ultimoEstado = getUltimoEstado(o.getEstadosDeSectores());
-			if(ultimoEstado != null) {
-				sectorResultado.setIdEstadoSector(ultimoEstado.getEstados().getIdEstado());	
+			if (ultimoEstado != null) {
+				sectorResultado.setIdEstadoSector(ultimoEstado.getEstados().getIdEstado());
 				o.setColor(ultimoEstado.getEstados().getColor());
 				o.setSePuedeUtilizar(ultimoEstado.getEstados().isPermiteUsar());
-			}else {
+			} else {
 				o.setColor(_colorDefecto);
 				o.setSePuedeUtilizar(true);
 			}
-			
+
 		}
 		return getHorasReservadas(sectorResultado, fecha, horas);
 	}
-	
-	
-	private HashMap<String, String>  getHorasReservadas(Sectores sector, LocalDateTime fecha, String[] horas){
-		HashMap<String,String> hashResultado = new LinkedHashMap<String, String>();
-		
-		for (int i = 0; i < horas.length-1; i++) {
-			
-			//Si devuelve el id del sector, entonces en ese rango de horas el sector esta ocupado
-			Integer id = reservasRepository.isOcupado(sector.getIdSector(), Utilities.getDateTimeAt(Integer.parseInt(horas[i]), fecha), Utilities.getDateTimeAt(Integer.parseInt(horas[i+1]), fecha));
-			if(id != null) {
-				hashResultado.put(""+horas[i] + "-" + horas[i+1], "ocupado");
-			}else {
-				hashResultado.put(""+horas[i] + "-" + horas[i+1], "libre");
+
+	private HashMap<String, String> getHorasReservadas(Sectores sector, LocalDateTime fecha, String[] horas) {
+		HashMap<String, String> hashResultado = new LinkedHashMap<String, String>();
+
+		for (int i = 0; i < horas.length - 1; i++) {
+
+			// Si devuelve el id del sector, entonces en ese rango de horas el sector esta
+			// ocupado
+			Integer id = reservasRepository.isOcupado(sector.getIdSector(),
+					Utilities.getDateTimeAt(Integer.parseInt(horas[i]), fecha),
+					Utilities.getDateTimeAt(Integer.parseInt(horas[i + 1]), fecha));
+			if (id != null) {
+				hashResultado.put("" + horas[i] + "-" + horas[i + 1], "ocupado");
+			} else {
+				hashResultado.put("" + horas[i] + "-" + horas[i + 1], "libre");
 			}
 		}
 		return hashResultado;
 	}
-	
+
+	/*
+	 * Devuelve un Hash que tiene como key el id del material, y como value el stock
+	 * disponible en las fechas dadas
+	 */
+	public HashMap<Integer, Integer> getStockMaterialesPorReserva(LocalDateTime fechaDesde, LocalDateTime fechaHasta) {
+		HashMap<Integer, Integer> hashMaterialStock = new HashMap<Integer, Integer>();
+		List<Materiales> materiales = materialesRepository.findAll();
+		for (Materiales mat : materiales) {
+			hashMaterialStock.put(mat.getIdMaterial(), mat.getStock());
+		}
+		List<Object> result = (List<Object>) reservasRepository.getMaterialesDeReserva(fechaDesde, fechaHasta);
+		for (Object valoresInteger : result) {
+			Object idMaterial = ((Object[]) valoresInteger)[0];
+			Object gasto = ((Object[]) valoresInteger)[2];
+			hashMaterialStock.put((Integer) idMaterial,
+					((Integer) hashMaterialStock.get(idMaterial)) - (Integer) gasto);
+		}
+		return hashMaterialStock;
+	}
 
 }

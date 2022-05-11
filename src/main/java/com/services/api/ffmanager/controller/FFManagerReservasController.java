@@ -79,7 +79,7 @@ public class FFManagerReservasController {
 					Utilities.getDateTimeFromString(fechaDesde), Utilities.getDateTimeFromString(fechaHasta));
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return new ResponseEntity<>("Error: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		List<SectoresSimpleDTO> listaDatosLibresDTO = new ArrayList<SectoresSimpleDTO>();
 		List<SectoresSimpleDTO> listaDatosOcupadosDTO = new ArrayList<SectoresSimpleDTO>();
@@ -120,7 +120,7 @@ public class FFManagerReservasController {
 					Utilities.getDateTimeFromString(fecha), horas);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return new ResponseEntity<>("Error: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 		return new ResponseEntity<>(datos, HttpStatus.OK);
@@ -211,13 +211,28 @@ public class FFManagerReservasController {
 			
 		} catch (NumberFormatException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return new ResponseEntity<>("Error: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return new ResponseEntity<>("Error: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
 		return new ResponseEntity<>(listaAreas, HttpStatus.OK);
 	}
+	
+	
+	@GetMapping(value = "/reservas/get-stock-materiales/{fechaDesde}/{fechaHasta}")
+	public ResponseEntity<Object> getStockMateriales(@PathVariable("fechaDesde") String fechaDesde, @PathVariable("fechaHasta") String fechaHasta) {
+		HashMap<Integer, Integer> hashMaterialStock = null;
+		try {
+			hashMaterialStock = reservasServices.getStockMaterialesPorReserva(Utilities.getDateTimeFromString(fechaDesde), Utilities.getDateTimeFromString(fechaHasta));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			return new ResponseEntity<>("Error: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<>(hashMaterialStock, HttpStatus.OK);
+		
+	}
+	
 	
 }
