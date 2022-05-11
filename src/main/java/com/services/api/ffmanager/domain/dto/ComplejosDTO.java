@@ -33,8 +33,8 @@ public class ComplejosDTO {
 	@JsonProperty("datosInstitucionDeportiva")
 	private DatosInstitucionDeportivaDTO datosInstitucionDeportivaDTO;
 	//@JsonManagedReference
-	@JsonProperty("areas")
-	private Set<AreasDTO> areas;
+	//@JsonProperty("areas")
+	//private Set<AreasDTO> areas;
 	
 	public void setDatosInstitucionDeportivaDTO(DatosInstitucionDeportivaDTO dto) {
 		this.datosInstitucionDeportivaDTO = dto;

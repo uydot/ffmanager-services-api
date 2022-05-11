@@ -31,8 +31,8 @@ public class AreasDTO {
 	@JsonProperty("complejos")
 	private ComplejosDTO complejosDTO;
 	//@JsonManagedReference
-	@JsonProperty("sectores")
-	private Set<SectoresDTO> sectores;
+	//@JsonProperty("sectores")
+	//private Set<SectoresDTO> sectores;
 	
 	public void setComplejosDTO(ComplejosDTO dto) {
 		this.complejosDTO = dto;

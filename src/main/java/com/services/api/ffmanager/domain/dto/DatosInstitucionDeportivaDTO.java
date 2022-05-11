@@ -33,8 +33,8 @@ public class DatosInstitucionDeportivaDTO {
 	private String direccion;
 	@JsonProperty("telefonoContacto")
 	private String telefonoContacto;
-	@JsonProperty("complejos")
-	private Set<ComplejosDTO> complejos;
+//	@JsonProperty("complejos")
+//	private Set<ComplejosDTO> complejos;
 	
 
 }
