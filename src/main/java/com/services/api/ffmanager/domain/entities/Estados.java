@@ -35,8 +35,18 @@ public class Estados implements Serializable {
     private Set<EstadosDeSectores> estadosDeSectores;
     @Column(name="color")
     private String color;
+    @Column(name="indica_reserva")
+    private boolean indicaReserva;
 
-    public String getColor() {
+    public boolean isIndicaReserva() {
+		return indicaReserva;
+	}
+
+	public void setIndicaReserva(boolean indicaReserva) {
+		this.indicaReserva = indicaReserva;
+	}
+
+	public String getColor() {
 		return color;
 	}
 

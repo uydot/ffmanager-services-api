@@ -194,5 +194,11 @@ public class InstitucionalServicesImpl implements InstitucionalServices {
 	public Collection<Sectores> getAllSectores() {
 		return sectoresRepository.findAll();
 	}
+	
+	@Override
+	public Collection<Sectores> getAllSectoresByIdArea(int idArea) {
+		return sectoresRepository.findAllSectoresByIdArea(idArea);
+	}
+
 
 }

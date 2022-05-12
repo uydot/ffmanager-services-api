@@ -27,6 +27,6 @@ public interface ReservasRepository extends JpaRepository<Reservas, Integer> {
 	public Integer isOcupado(@Param("idSector")Integer idSector, @Param("fechaDesde") LocalDateTime fechaDesde, @Param("fechaHasta") LocalDateTime fechaHasta);
 	
 	
-	@Query( value = "select m.id_material , m.stock , mdr.cantidad from ffmanager.materiales m , ffmanager.materiales_de_reserva mdr , ffmanager.reservas r where r.fecha_desde <= :fechaDesde and r.fecha_hasta >= :fechaHasta and r.id_reserva = mdr.fk_id_reserva and mdr.fk_id_material  = m.id_material", nativeQuery=true)
+	@Query( value = "select m.id_material , m.stock , mdr.cantidad , m.nombre from ffmanager.materiales m , ffmanager.materiales_de_reserva mdr , ffmanager.reservas r where r.fecha_desde <= :fechaDesde and r.fecha_hasta >= :fechaHasta and r.id_reserva = mdr.fk_id_reserva and mdr.fk_id_material  = m.id_material", nativeQuery=true)
 	public  Collection<Object> getMaterialesDeReserva(@Param("fechaDesde") LocalDateTime fechaDesde, @Param("fechaHasta") LocalDateTime fechaHasta);
 }

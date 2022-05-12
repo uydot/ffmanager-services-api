@@ -31,8 +31,11 @@ import com.services.api.ffmanager.domain.dto.ReservasDTO;
 import com.services.api.ffmanager.domain.dto.ResultadoBusquedaSectoresDTO;
 import com.services.api.ffmanager.domain.dto.SectoresDTO;
 import com.services.api.ffmanager.domain.dto.SectoresSimpleDTO;
+import com.services.api.ffmanager.domain.dto.StockMaterialDTO;
 import com.services.api.ffmanager.domain.entities.ActividadesDeReserva;
 import com.services.api.ffmanager.domain.entities.Areas;
+import com.services.api.ffmanager.domain.entities.Estados;
+import com.services.api.ffmanager.domain.entities.EstadosDeSectores;
 import com.services.api.ffmanager.domain.entities.MaterialesDeReserva;
 import com.services.api.ffmanager.domain.entities.ReservaDeSector;
 import com.services.api.ffmanager.domain.entities.Reservas;
@@ -174,6 +177,12 @@ public class FFManagerReservasController {
 		rds.setReservas(reserva);
 		rds.setSectores(sector.get());
 		reservasServices.createReservaDeSector(rds);
+		
+		
+		//Genero el nuevo estado reservado del sector
+		Estados estadoReservado = reservasServices.getEstadoReservado();
+		
+		reservasServices.setEstadoSector(sector.get().getIdSector(), 2);
 
 		return new ResponseEntity<>(mapper.map(reserva, ReservasDTO.class), HttpStatus.OK);
 
@@ -223,14 +232,14 @@ public class FFManagerReservasController {
 	
 	@GetMapping(value = "/reservas/get-stock-materiales/{fechaDesde}/{fechaHasta}")
 	public ResponseEntity<Object> getStockMateriales(@PathVariable("fechaDesde") String fechaDesde, @PathVariable("fechaHasta") String fechaHasta) {
-		HashMap<Integer, Integer> hashMaterialStock = null;
+		List< StockMaterialDTO> listaMaterialStock = null;
 		try {
-			hashMaterialStock = reservasServices.getStockMaterialesPorReserva(Utilities.getDateTimeFromString(fechaDesde), Utilities.getDateTimeFromString(fechaHasta));
+			listaMaterialStock = reservasServices.getStockMaterialesPorReserva(Utilities.getDateTimeFromString(fechaDesde), Utilities.getDateTimeFromString(fechaHasta));
+			
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			return new ResponseEntity<>("Error: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return new ResponseEntity<>(hashMaterialStock, HttpStatus.OK);
+		return new ResponseEntity<>(listaMaterialStock, HttpStatus.OK);
 		
 	}
 	

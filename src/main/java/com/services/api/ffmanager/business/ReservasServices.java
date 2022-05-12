@@ -5,8 +5,10 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
+import com.services.api.ffmanager.domain.dto.StockMaterialDTO;
 import com.services.api.ffmanager.domain.entities.ActividadesDeReserva;
 import com.services.api.ffmanager.domain.entities.Areas;
+import com.services.api.ffmanager.domain.entities.Estados;
 import com.services.api.ffmanager.domain.entities.MaterialesDeReserva;
 import com.services.api.ffmanager.domain.entities.ReservaDeSector;
 import com.services.api.ffmanager.domain.entities.Reservas;
@@ -16,7 +18,9 @@ public interface ReservasServices {
 
 	public static String _libres = "sectores_libres";
 	public static String _ocupados = "sectores_ocupados";
-	public static String _colorDefecto = "#008000";
+	public static String _colorDisponible = "#008000";
+	public static String _colorOcupado = "";
+	public static String _colorInhabilitado = "";
 	
 	public abstract HashMap<String, List<Sectores>> getAllSectoresDisponibles(Integer idArea, LocalDateTime fechaDesde, LocalDateTime fechaHasta);
 	
@@ -36,5 +40,7 @@ public interface ReservasServices {
 	
 	public abstract HashMap<String, String> getUsoDeHorasDeAreaSimple(Integer idArea, LocalDateTime fecha, String[] horas);
 	
-	public abstract HashMap<Integer, Integer> getStockMaterialesPorReserva(LocalDateTime fechaDesde,LocalDateTime fechaHasta);
+	public abstract  List<StockMaterialDTO> getStockMaterialesPorReserva(LocalDateTime fechaDesde,LocalDateTime fechaHasta);
+	
+	public abstract Estados getEstadoReservado();
 }

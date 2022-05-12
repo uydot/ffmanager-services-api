@@ -40,5 +40,6 @@ public interface InstitucionalServices {
 	public abstract void deleteSectores(Sectores o);
 	public abstract Optional<Sectores> getOneSectores(String id);
 	public Collection<Sectores> getAllSectores();
+	public Collection<Sectores> getAllSectoresByIdArea(int idArea);
 	
 }

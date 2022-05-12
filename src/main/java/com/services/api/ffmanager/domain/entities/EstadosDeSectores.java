@@ -20,11 +20,10 @@ import javax.persistence.Version;
 public class EstadosDeSectores implements Serializable {
 
    
-    @Column(name="fecha_asignado", nullable=false)
-    private LocalDateTime fechaAsignado;
-    @Id
-    @Column(name="id_estado_sector", unique=true, nullable=false, precision=10)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+   
+	@Id
+	@Column(name="id_estado_sector", unique=true, nullable=false, precision=10)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idEstadoSector;
     @ManyToOne(optional=false)
     @JoinColumn(name="fk_id_estado", nullable=false)
@@ -32,6 +31,8 @@ public class EstadosDeSectores implements Serializable {
     @ManyToOne(optional=false)
     @JoinColumn(name="fk_id_sector", nullable=false)
     private Sectores sectores;
+    @Column(name="fecha_asignado", nullable=false)
+    private LocalDateTime fechaAsignado;
 
     /** Default constructor. */
     public EstadosDeSectores() {

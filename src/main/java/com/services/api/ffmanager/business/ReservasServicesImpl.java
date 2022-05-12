@@ -15,6 +15,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.services.api.ffmanager.domain.dto.StockMaterialDTO;
 import com.services.api.ffmanager.domain.entities.ActividadesDeReserva;
 import com.services.api.ffmanager.domain.entities.Areas;
 import com.services.api.ffmanager.domain.entities.Complejos;
@@ -77,16 +78,19 @@ public class ReservasServicesImpl implements ReservasServices {
 		Collection<Sectores> listResult = (Collection<Sectores>) reservasRepository.getAllSectoresDisponibles(idArea);
 		Collection<Sectores> sectores = new ArrayList<Sectores>();
 		for (Sectores o : listResult) {
+			
 			Set<EstadosDeSectores> ultimoEstadoEnLista = new HashSet<EstadosDeSectores>();
 			EstadosDeSectores ultimoEstado = getUltimoEstado(o.getEstadosDeSectores());
+			
 			if (ultimoEstado != null) {
 				ultimoEstadoEnLista.add(ultimoEstado);
 				o.setEstadosDeSectores(ultimoEstadoEnLista);
 				o.setIdEstadoSector(ultimoEstado.getEstados().getIdEstado());
 				o.setColor(ultimoEstado.getEstados().getColor());
 				o.setSePuedeUtilizar(ultimoEstado.getEstados().isPermiteUsar());
+				
 			} else {
-				o.setColor(_colorDefecto);
+				o.setColor(_colorDisponible);
 				o.setSePuedeUtilizar(true);
 			}
 
@@ -202,7 +206,7 @@ public class ReservasServicesImpl implements ReservasServices {
 				o.setColor(ultimoEstado.getEstados().getColor());
 				o.setSePuedeUtilizar(ultimoEstado.getEstados().isPermiteUsar());
 			} else {
-				o.setColor(_colorDefecto);
+				o.setColor(_colorDisponible);
 				o.setSePuedeUtilizar(true);
 			}
 
@@ -233,20 +237,50 @@ public class ReservasServicesImpl implements ReservasServices {
 	 * Devuelve un Hash que tiene como key el id del material, y como value el stock
 	 * disponible en las fechas dadas
 	 */
-	public HashMap<Integer, Integer> getStockMaterialesPorReserva(LocalDateTime fechaDesde, LocalDateTime fechaHasta) {
-		HashMap<Integer, Integer> hashMaterialStock = new HashMap<Integer, Integer>();
+	public List<StockMaterialDTO> getStockMaterialesPorReserva(LocalDateTime fechaDesde, LocalDateTime fechaHasta) {
+		List< StockMaterialDTO> listaMaterialStock = new ArrayList<StockMaterialDTO>();
+		
+		HashMap<String, Integer> hashMaterialStockAUX = new HashMap<String, Integer>();
 		List<Materiales> materiales = materialesRepository.findAll();
 		for (Materiales mat : materiales) {
-			hashMaterialStock.put(mat.getIdMaterial(), mat.getStock());
+			hashMaterialStockAUX.put(""+mat.getIdMaterial()+ "-" + mat.getNombre(), mat.getStock());
 		}
+		
+		
 		List<Object> result = (List<Object>) reservasRepository.getMaterialesDeReserva(fechaDesde, fechaHasta);
-		for (Object valoresInteger : result) {
-			Object idMaterial = ((Object[]) valoresInteger)[0];
-			Object gasto = ((Object[]) valoresInteger)[2];
-			hashMaterialStock.put((Integer) idMaterial,
-					((Integer) hashMaterialStock.get(idMaterial)) - (Integer) gasto);
+		
+		//Creo un hash para calcular el stock de cada material
+		for (Object valores : result) {
+			Object idMaterial = ((Object[]) valores)[0];
+			Object nombre = ((Object[]) valores)[3];
+			Object gasto = ((Object[]) valores)[2];
+			
+			hashMaterialStockAUX.put(""+(Integer) idMaterial + "-" + (String) nombre ,
+					((Integer) hashMaterialStockAUX.get(""+idMaterial+"-"+nombre)) - (Integer) gasto);
 		}
-		return hashMaterialStock;
+		
+		
+		//Itero sobre el hash de materiales con su stock, para generar una lista de objetos StockMaterialDTO
+		StockMaterialDTO sDTO;
+		for (var entry : hashMaterialStockAUX.entrySet()) {
+			String id_nombre_String = entry.getKey();
+			String[] id_nombre_Array = id_nombre_String.split("-");
+			Integer stock = entry.getValue();
+		   
+			sDTO = new StockMaterialDTO();
+			
+			sDTO.setIdMaterial(Integer.parseInt(id_nombre_Array[0]));
+			sDTO.setNombre(id_nombre_Array[1]);
+			sDTO.setStock(stock);
+			listaMaterialStock.add(sDTO);
+		}
+		
+		return listaMaterialStock;
+	}
+
+	@Override
+	public Estados getEstadoReservado() {
+		return estadosRepository.getEstadoReservado();
 	}
 
 }

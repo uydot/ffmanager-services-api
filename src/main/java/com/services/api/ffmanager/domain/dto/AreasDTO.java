@@ -2,14 +2,10 @@ package com.services.api.ffmanager.domain.dto;
 
 import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -31,8 +27,8 @@ public class AreasDTO {
 	@JsonProperty("complejos")
 	private ComplejosDTO complejosDTO;
 	//@JsonManagedReference
-	//@JsonProperty("sectores")
-	//private Set<SectoresDTO> sectores;
+	@JsonProperty("sectores")
+	private Set<SectoresDTO> sectoresDTO;
 	
 	public void setComplejosDTO(ComplejosDTO dto) {
 		this.complejosDTO = dto;

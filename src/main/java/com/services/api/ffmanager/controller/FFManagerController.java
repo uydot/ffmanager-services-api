@@ -2,7 +2,9 @@ package com.services.api.ffmanager.controller;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -218,13 +220,23 @@ public class FFManagerController {
 		
 		Collection<Areas> datos = institucionalServices.getAllAreas();
 		List<AreasDTO> listaDatosDTO = new ArrayList<AreasDTO>();
+		Set<SectoresDTO> sectoresDTO;
 		for (Areas area : datos) {
+			sectoresDTO = new LinkedHashSet<SectoresDTO>();
 			AreasDTO datosDTO = mapper.map(area, AreasDTO.class);
-
+			
 			var val = institucionalServices.getOneComplejos("" + area.getComplejos().getIdComplejo());
 			ComplejosDTO diDTO = val.isPresent() ? mapper.map(val.get(), ComplejosDTO.class) : null;
 			datosDTO.setComplejosDTO(diDTO);
 
+			var sectoresDelArea = institucionalServices.getAllSectoresByIdArea(area.getIdArea());
+			for (Sectores s : sectoresDelArea) {
+				SectoresDTO sDTO = mapper.map(s, SectoresDTO.class);
+				sectoresDTO.add(sDTO);
+			}
+			
+			datosDTO.setSectoresDTO(sectoresDTO);
+			
 			listaDatosDTO.add(datosDTO);
 		}
 		return new ResponseEntity<>(listaDatosDTO, HttpStatus.OK);
