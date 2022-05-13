@@ -200,5 +200,10 @@ public class InstitucionalServicesImpl implements InstitucionalServices {
 		return sectoresRepository.findAllSectoresByIdArea(idArea);
 	}
 
+	@Override
+	public Sectores getOneSectorByIdArea(String idArea) {
+		return sectoresRepository.getOneSectorByIdArea(Integer.parseInt(idArea));
+	}
+
 
 }

@@ -11,6 +11,8 @@ import lombok.ToString;
 @ToString
 public class ReservaDeSectorTransferDTO {
 	
+	@JsonProperty("idArea")
+	private String idArea;
 	@JsonProperty("idSector")
 	private String idSector;//idSector
 	@JsonProperty("fechaHoraDesde")

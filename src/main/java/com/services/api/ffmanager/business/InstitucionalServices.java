@@ -41,5 +41,6 @@ public interface InstitucionalServices {
 	public abstract Optional<Sectores> getOneSectores(String id);
 	public Collection<Sectores> getAllSectores();
 	public Collection<Sectores> getAllSectoresByIdArea(int idArea);
+	public Sectores getOneSectorByIdArea(String idArea);
 	
 }

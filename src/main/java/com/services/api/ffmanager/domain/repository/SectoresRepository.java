@@ -13,4 +13,6 @@ public interface SectoresRepository extends JpaRepository<Sectores, Integer> {
 	@Query(value = "SELECT * FROM sectores WHERE fk_id_area = :idArea" , nativeQuery=true)
 	public Collection<Sectores> findAllSectoresByIdArea(@Param("idArea") int idArea);
 	
+	@Query("select s from sectores s where s.areas.idArea = :idArea")
+	public Sectores getOneSectorByIdArea(@Param("idArea") Integer idArea);
 }

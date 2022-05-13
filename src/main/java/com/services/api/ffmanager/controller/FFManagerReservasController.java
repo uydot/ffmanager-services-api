@@ -132,9 +132,21 @@ public class FFManagerReservasController {
 	
 	@PostMapping(value = "/reservas/reservar")
 	public ResponseEntity<Object> reservar(@RequestBody ReservaDeSectorTransferDTO dto) {
+		
+		
+		Sectores sector;
+		// Si viene un idArea es porque se refiere a un area simple, entonces busco el sector asociado
+		if(dto.getIdArea()!= null && !"".equals(dto.getIdArea())){
+			var s = institucionalServices.getOneSectorByIdArea(dto.getIdArea());	
+			sector = s;
+		}else {
+			// Busco el sector si no viene el idArea, indica que estoy en presencia de un area compuesta
+			var s = institucionalServices.getOneSectores(dto.getIdSector());
+			sector = s.get();
+		}
+		
 
-		// Busco el sector
-		var sector = institucionalServices.getOneSectores(dto.getIdSector());
+		
 
 		// Busco el usuario que se le asigna la reserva
 		var usuario = perfilesServices.getOneUsuarios(dto.getUsuarioDeReserva());
@@ -175,14 +187,12 @@ public class FFManagerReservasController {
 		// Genero la reserva del sector
 		ReservaDeSector rds = new ReservaDeSector();
 		rds.setReservas(reserva);
-		rds.setSectores(sector.get());
+		rds.setSectores(sector);
 		reservasServices.createReservaDeSector(rds);
 		
 		
 		//Genero el nuevo estado reservado del sector
-		Estados estadoReservado = reservasServices.getEstadoReservado();
-		
-		reservasServices.setEstadoSector(sector.get().getIdSector(), 2);
+		reservasServices.setEstadoSector(sector.getIdSector(), 2);
 
 		return new ResponseEntity<>(mapper.map(reserva, ReservasDTO.class), HttpStatus.OK);
 
