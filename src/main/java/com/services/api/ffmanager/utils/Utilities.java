@@ -65,6 +65,11 @@ public class Utilities {
 		return listaHoras;
 	}
 	
+	
+//	public static boolean isBetween(LocalDateTime fechaBuscada, LocalDateTime desde, LocalDateTime hasta) {
+//		if(compareLocalDateTime(fechaBuscada, desde))
+//		return false;
+//	}
 
 //	
 //	public static List<Integer> getHorasFromDates(DateTimeFormatter  start, Date end){

@@ -78,19 +78,27 @@ public class ReservasServicesImpl implements ReservasServices {
 		Collection<Sectores> listResult = (Collection<Sectores>) reservasRepository.getAllSectoresDisponibles(idArea);
 		Collection<Sectores> sectores = new ArrayList<Sectores>();
 		for (Sectores o : listResult) {
-			
+
 			Set<EstadosDeSectores> ultimoEstadoEnLista = new HashSet<EstadosDeSectores>();
 			EstadosDeSectores ultimoEstado = getUltimoEstado(o.getEstadosDeSectores());
-			
-			if (ultimoEstado != null) {
+
+			if (ultimoEstado != null) {// Si encuentro estados de un sector, me quedo con el ultimo y cargo sus
+										// valores, luego valido si ese estado corresponde dentro del rango de fechas
+										// solicitado
+
+				System.out.println(o.getIdSector());
+
 				ultimoEstadoEnLista.add(ultimoEstado);
 				o.setEstadosDeSectores(ultimoEstadoEnLista);
 				o.setIdEstadoSector(ultimoEstado.getEstados().getIdEstado());
 				o.setColor(ultimoEstado.getEstados().getColor());
-				o.setSePuedeUtilizar(ultimoEstado.getEstados().isPermiteUsar());
-				
-			} else {
-				o.setColor(_colorDisponible);
+				o.setSePuedeUtilizar(ultimoEstado.getEstados().isPermiteUsar());// Indico si se puede utilizar o no el
+																				// sector, esto define si el sector esta
+																				// sin daños
+			}
+
+			else {
+				//o.setColor(_colorDisponible);
 				o.setSePuedeUtilizar(true);
 			}
 
@@ -120,12 +128,22 @@ public class ReservasServicesImpl implements ReservasServices {
 		HashMap<String, List<Sectores>> hashResultado = new HashMap<String, List<Sectores>>();
 		List<Sectores> sectoresOcupados = new ArrayList<Sectores>();
 		List<Sectores> sectoresLibres = new ArrayList<Sectores>();
+		Estados estadoReservado = estadosRepository.getEstadoReservado();
 		for (Sectores s : sectores) {
+
+			System.out.println(s.getIdSector());
+
 			Integer id = reservasRepository.isOcupado(s.getIdSector(), fechaDesde, fechaHasta);
 			if (id != null) {// Si devuelve el id del sector, entonces en ese rango de horas el sector esta
 								// ocupado
+				s.setColor(estadoReservado.getColor());
+				s.setSePuedeUtilizar(false);
 				sectoresOcupados.add(s);
-			} else {
+			} else if (s.getSePuedeUtilizar()) {//Si el sector se puede utilizar lo marco como disponible, sino lo dejo como estaba, ya que no se puede utilizar por daños 
+				s.setColor(_colorDisponible);
+				s.setSePuedeUtilizar(true);
+				sectoresLibres.add(s);
+			}else {//Lo agrego en libre, pero en realidad es el estado donde el sector no esta disponible por daños
 				sectoresLibres.add(s);
 			}
 		}
@@ -238,43 +256,42 @@ public class ReservasServicesImpl implements ReservasServices {
 	 * disponible en las fechas dadas
 	 */
 	public List<StockMaterialDTO> getStockMaterialesPorReserva(LocalDateTime fechaDesde, LocalDateTime fechaHasta) {
-		List< StockMaterialDTO> listaMaterialStock = new ArrayList<StockMaterialDTO>();
-		
+		List<StockMaterialDTO> listaMaterialStock = new ArrayList<StockMaterialDTO>();
+
 		HashMap<String, Integer> hashMaterialStockAUX = new HashMap<String, Integer>();
 		List<Materiales> materiales = materialesRepository.findAll();
 		for (Materiales mat : materiales) {
-			hashMaterialStockAUX.put(""+mat.getIdMaterial()+ "-" + mat.getNombre(), mat.getStock());
+			hashMaterialStockAUX.put("" + mat.getIdMaterial() + "-" + mat.getNombre(), mat.getStock());
 		}
-		
-		
+
 		List<Object> result = (List<Object>) reservasRepository.getMaterialesDeReserva(fechaDesde, fechaHasta);
-		
-		//Creo un hash para calcular el stock de cada material
+
+		// Creo un hash para calcular el stock de cada material
 		for (Object valores : result) {
 			Object idMaterial = ((Object[]) valores)[0];
 			Object nombre = ((Object[]) valores)[3];
 			Object gasto = ((Object[]) valores)[2];
-			
-			hashMaterialStockAUX.put(""+(Integer) idMaterial + "-" + (String) nombre ,
-					((Integer) hashMaterialStockAUX.get(""+idMaterial+"-"+nombre)) - (Integer) gasto);
+
+			hashMaterialStockAUX.put("" + (Integer) idMaterial + "-" + (String) nombre,
+					((Integer) hashMaterialStockAUX.get("" + idMaterial + "-" + nombre)) - (Integer) gasto);
 		}
-		
-		
-		//Itero sobre el hash de materiales con su stock, para generar una lista de objetos StockMaterialDTO
+
+		// Itero sobre el hash de materiales con su stock, para generar una lista de
+		// objetos StockMaterialDTO
 		StockMaterialDTO sDTO;
 		for (var entry : hashMaterialStockAUX.entrySet()) {
 			String id_nombre_String = entry.getKey();
 			String[] id_nombre_Array = id_nombre_String.split("-");
 			Integer stock = entry.getValue();
-		   
+
 			sDTO = new StockMaterialDTO();
-			
+
 			sDTO.setIdMaterial(Integer.parseInt(id_nombre_Array[0]));
 			sDTO.setNombre(id_nombre_Array[1]);
 			sDTO.setStock(stock);
 			listaMaterialStock.add(sDTO);
 		}
-		
+
 		return listaMaterialStock;
 	}
 
