@@ -36,13 +36,13 @@ public class Estados implements Serializable {
     @Column(name="color")
     private String color;
     @Column(name="indica_reserva")
-    private boolean indicaReserva;
+    private Boolean indicaReserva;
 
-    public boolean isIndicaReserva() {
+    public Boolean isIndicaReserva() {
 		return indicaReserva;
 	}
 
-	public void setIndicaReserva(boolean indicaReserva) {
+	public void setIndicaReserva(Boolean indicaReserva) {
 		this.indicaReserva = indicaReserva;
 	}
 
