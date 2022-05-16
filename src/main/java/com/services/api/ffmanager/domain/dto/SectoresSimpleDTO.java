@@ -1,7 +1,5 @@
 package com.services.api.ffmanager.domain.dto;
 
-import java.util.Set;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
@@ -31,6 +29,7 @@ public class SectoresSimpleDTO {
 	private boolean sePuedeUtilizar;
 	@JsonProperty("color")
 	private String color;
-	
+	@JsonProperty("usuarioReserva")
+	private String usuarioReserva;
 
 }

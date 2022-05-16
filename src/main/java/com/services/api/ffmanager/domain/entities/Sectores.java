@@ -48,8 +48,22 @@ public class Sectores implements Serializable {
     private Boolean sePuedeUtilizar;
     
     private String color;
+    
+    private String usuarioReserva;
 
-    /** Default constructor. */
+    public String getUsuarioReserva() {
+		return usuarioReserva;
+	}
+
+	public void setUsuarioReserva(String usuarioReserva) {
+		this.usuarioReserva = usuarioReserva;
+	}
+
+	public Boolean getEsSectorGolero() {
+		return esSectorGolero;
+	}
+
+	/** Default constructor. */
     public Sectores() {
         super();
     }

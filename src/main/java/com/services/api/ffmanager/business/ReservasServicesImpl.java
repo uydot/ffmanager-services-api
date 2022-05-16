@@ -1,13 +1,10 @@
 package com.services.api.ffmanager.business;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
@@ -86,8 +83,6 @@ public class ReservasServicesImpl implements ReservasServices {
 										// valores, luego valido si ese estado corresponde dentro del rango de fechas
 										// solicitado
 
-				System.out.println(o.getIdSector());
-
 				ultimoEstadoEnLista.add(ultimoEstado);
 				o.setEstadosDeSectores(ultimoEstadoEnLista);
 				o.setIdEstadoSector(ultimoEstado.getEstados().getIdEstado());
@@ -131,13 +126,12 @@ public class ReservasServicesImpl implements ReservasServices {
 		Estados estadoReservado = estadosRepository.getEstadoReservado();
 		for (Sectores s : sectores) {
 
-			System.out.println(s.getIdSector());
-
-			Integer id = reservasRepository.isOcupado(s.getIdSector(), fechaDesde, fechaHasta);
-			if (id != null) {// Si devuelve el id del sector, entonces en ese rango de horas el sector esta
+			Collection<Integer> ids = reservasRepository.isOcupado(s.getIdSector(), fechaDesde, fechaHasta);
+			if (ids != null && !ids.isEmpty()) {// Si devuelve el id del sector, entonces en ese rango de horas el sector esta
 								// ocupado
 				s.setColor(estadoReservado.getColor());
 				s.setSePuedeUtilizar(false);
+				//s.setUsuarioReserva(s.get);
 				sectoresOcupados.add(s);
 			} else if (s.getSePuedeUtilizar()) {//Si el sector se puede utilizar lo marco como disponible, sino lo dejo como estaba, ya que no se puede utilizar por daños 
 				s.setColor(_colorDisponible);
@@ -239,10 +233,10 @@ public class ReservasServicesImpl implements ReservasServices {
 
 			// Si devuelve el id del sector, entonces en ese rango de horas el sector esta
 			// ocupado
-			Integer id = reservasRepository.isOcupado(sector.getIdSector(),
+			Collection<Integer> ids = reservasRepository.isOcupado(sector.getIdSector(),
 					Utilities.getDateTimeAt(Integer.parseInt(horas[i]), fecha),
 					Utilities.getDateTimeAt(Integer.parseInt(horas[i + 1]), fecha));
-			if (id != null) {
+			if (ids != null && !ids.isEmpty()) {
 				hashResultado.put("" + horas[i] + "-" + horas[i + 1], "ocupado");
 			} else {
 				hashResultado.put("" + horas[i] + "-" + horas[i + 1], "libre");
