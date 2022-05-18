@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
@@ -82,13 +83,13 @@ public class ReservasServicesImpl implements ReservasServices {
 			if (ultimoEstado != null) {// Si encuentro estados de un sector, me quedo con el ultimo y cargo sus
 										// valores, luego valido si ese estado corresponde dentro del rango de fechas
 										// solicitado
-
+			
 				ultimoEstadoEnLista.add(ultimoEstado);
 				o.setEstadosDeSectores(ultimoEstadoEnLista);
 				o.setIdEstadoSector(ultimoEstado.getEstados().getIdEstado());
 				o.setColor(ultimoEstado.getEstados().getColor());
 				o.setSePuedeUtilizar(ultimoEstado.getEstados().isPermiteUsar());// Indico si se puede utilizar o no el
-																				// sector, esto define si el sector esta
+																		// sector, esto define si el sector esta
 																				// sin daños
 			}
 
@@ -118,6 +119,7 @@ public class ReservasServicesImpl implements ReservasServices {
 		return null;
 	}
 
+	@SuppressWarnings("deprecation")
 	private HashMap<String, List<Sectores>> getSectoresReservados(Collection<Sectores> sectores,
 			LocalDateTime fechaDesde, LocalDateTime fechaHasta) {
 		HashMap<String, List<Sectores>> hashResultado = new HashMap<String, List<Sectores>>();
@@ -129,14 +131,21 @@ public class ReservasServicesImpl implements ReservasServices {
 			Collection<Integer> ids = reservasRepository.isOcupado(s.getIdSector(), fechaDesde, fechaHasta);
 			if (ids != null && !ids.isEmpty()) {// Si devuelve el id del sector, entonces en ese rango de horas el sector esta
 								// ocupado
+				Reservas r  = null;
+				for (int i = 0; i < 1; i++) {
+					r = reservasRepository.getOne(ids.iterator().next());//Me quedo con la primer reserva, ya que siempre se lo llama con ventana de 1 hora cuando se quiere ver el estado de las areas 
+				}
 				s.setColor(estadoReservado.getColor());
 				s.setSePuedeUtilizar(false);
-				//s.setUsuarioReserva(s.get);
+				s.setUsuarioReserva(r != null ? r.getUsuarioReserva() : "");
 				sectoresOcupados.add(s);
+				
 			} else if (s.getSePuedeUtilizar()) {//Si el sector se puede utilizar lo marco como disponible, sino lo dejo como estaba, ya que no se puede utilizar por daños 
 				s.setColor(_colorDisponible);
 				s.setSePuedeUtilizar(true);
+				s.setUsuarioReserva("");
 				sectoresLibres.add(s);
+				
 			}else {//Lo agrego en libre, pero en realidad es el estado donde el sector no esta disponible por daños
 				sectoresLibres.add(s);
 			}

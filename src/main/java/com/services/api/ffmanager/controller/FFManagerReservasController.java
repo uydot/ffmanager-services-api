@@ -2,7 +2,6 @@ package com.services.api.ffmanager.controller;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -29,13 +28,10 @@ import com.services.api.ffmanager.domain.dto.MaterialCantidadDTO;
 import com.services.api.ffmanager.domain.dto.ReservaDeSectorTransferDTO;
 import com.services.api.ffmanager.domain.dto.ReservasDTO;
 import com.services.api.ffmanager.domain.dto.ResultadoBusquedaSectoresDTO;
-import com.services.api.ffmanager.domain.dto.SectoresDTO;
 import com.services.api.ffmanager.domain.dto.SectoresSimpleDTO;
 import com.services.api.ffmanager.domain.dto.StockMaterialDTO;
 import com.services.api.ffmanager.domain.entities.ActividadesDeReserva;
 import com.services.api.ffmanager.domain.entities.Areas;
-import com.services.api.ffmanager.domain.entities.Estados;
-import com.services.api.ffmanager.domain.entities.EstadosDeSectores;
 import com.services.api.ffmanager.domain.entities.MaterialesDeReserva;
 import com.services.api.ffmanager.domain.entities.ReservaDeSector;
 import com.services.api.ffmanager.domain.entities.Reservas;
@@ -91,6 +87,7 @@ public class FFManagerReservasController {
 		
 		for (Sectores dato : datos.get(ReservasServices._libres)) {
 			SectoresSimpleDTO datoDTO = mapper.map(dato, SectoresSimpleDTO.class);
+			
 			listaDatosLibresDTO.add(datoDTO);
 			
 			//agrego para devolver una sola lista
@@ -99,6 +96,8 @@ public class FFManagerReservasController {
 		
 		for (Sectores dato : datos.get(ReservasServices._ocupados)) {
 			SectoresSimpleDTO datoDTO = mapper.map(dato, SectoresSimpleDTO.class);
+			datoDTO.setUsuarioReserva(dato.getUsuarioReserva());
+			
 			listaDatosOcupadosDTO.add(datoDTO);
 			
 			//agrego para devolver una sola lista
@@ -133,7 +132,6 @@ public class FFManagerReservasController {
 	@PostMapping(value = "/reservas/reservar")
 	public ResponseEntity<Object> reservar(@RequestBody ReservaDeSectorTransferDTO dto) {
 		
-		
 		Sectores sector;
 		// Si viene un idArea es porque se refiere a un area simple, entonces busco el sector asociado
 		if(dto.getIdArea()!= null && !"".equals(dto.getIdArea())){
@@ -144,9 +142,6 @@ public class FFManagerReservasController {
 			var s = institucionalServices.getOneSectores(dto.getIdSector());
 			sector = s.get();
 		}
-		
-
-		
 
 		// Busco el usuario que se le asigna la reserva
 		var usuario = perfilesServices.getOneUsuarios(dto.getUsuarioDeReserva());
@@ -155,7 +150,7 @@ public class FFManagerReservasController {
 		reserva.setFechaDesde(Utilities.getLocalDateTimeFromString(dto.getFechaHoraDesde()));
 		reserva.setFechaHasta(Utilities.getLocalDateTimeFromString(dto.getFechaHoraHasta()));
 		reserva.setUsuarios(usuario.get());
-
+		reserva.setUsuarioReserva(usuario.get().getNombre() + " " + usuario.get().getApellido());
 		reservasServices.createReserva(reserva);
 
 		// Busco los materiales y guardo los materiales de la reserva con su cantidad

@@ -41,8 +41,18 @@ public class Reservas implements Serializable {
     private Usuarios usuarios;
     @OneToMany(mappedBy="reservas")
     private Set<ReservaDeSector> reservaDeSector;
+    @Column(name="usuario_reserva")
+    private String usuarioReserva;
+    
+    public String getUsuarioReserva() {
+		return usuarioReserva;
+	}
 
-    /** Default constructor. */
+	public void setUsuarioReserva(String usuarioReserva) {
+		this.usuarioReserva = usuarioReserva;
+	}
+
+	/** Default constructor. */
     public Reservas() {
         super();
     }
