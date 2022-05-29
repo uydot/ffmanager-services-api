@@ -32,6 +32,16 @@ public class Actividades implements Serializable {
     private int duracion;
     @OneToMany(mappedBy="actividades")
     private Set<ActividadesDeReserva> actividadesDeReserva;
+    public boolean isEsDefecto() {
+		return esDefecto;
+	}
+
+	public void setEsDefecto(boolean esDefecto) {
+		this.esDefecto = esDefecto;
+	}
+
+	@Column(name="es_defecto", nullable=false, length=1)
+    private boolean esDefecto;
 
     /** Default constructor. */
     public Actividades() {

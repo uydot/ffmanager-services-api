@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,12 +32,14 @@ import com.services.api.ffmanager.domain.dto.ReservasDTO;
 import com.services.api.ffmanager.domain.dto.ResultadoBusquedaSectoresDTO;
 import com.services.api.ffmanager.domain.dto.SectoresSimpleDTO;
 import com.services.api.ffmanager.domain.dto.StockMaterialDTO;
+import com.services.api.ffmanager.domain.dto.UsuariosDTO;
 import com.services.api.ffmanager.domain.entities.ActividadesDeReserva;
 import com.services.api.ffmanager.domain.entities.Areas;
 import com.services.api.ffmanager.domain.entities.MaterialesDeReserva;
 import com.services.api.ffmanager.domain.entities.ReservaDeSector;
 import com.services.api.ffmanager.domain.entities.Reservas;
 import com.services.api.ffmanager.domain.entities.Sectores;
+import com.services.api.ffmanager.domain.entities.Usuarios;
 import com.services.api.ffmanager.utils.Utilities;
 
 import lombok.extern.slf4j.Slf4j;
@@ -248,5 +252,48 @@ public class FFManagerReservasController {
 		
 	}
 	
+	
+	@GetMapping(value = "/reservas/get-all-reservas-usuarios/{fechaDesde}/{fechaHasta}")
+	public ResponseEntity<Object> getAllReservasPorUsuario(@PathVariable("fechaDesde") String fechaDesde, @PathVariable("fechaHasta") String fechaHasta) {
+		Set<Usuarios> listaUsuariosConReserva = null;
+		HashMap<UsuariosDTO, List<ReservasDTO>> reservasPorUsuario = null;
+		List<ReservasDTO> reservas;
+		try {
+			listaUsuariosConReserva = 
+					reservasServices.geAlltUsuariosConReserva(Utilities.getDateTimeFromString(fechaDesde), Utilities.getDateTimeFromString(fechaHasta));
+			if(listaUsuariosConReserva != null && !listaUsuariosConReserva.isEmpty()){
+				
+				reservasPorUsuario = new HashMap<UsuariosDTO, List<ReservasDTO>>();
+				
+				for (Usuarios u : listaUsuariosConReserva) {
+					reservas = new ArrayList<ReservasDTO>();
+					for (Reservas r : u.getReservas()) {
+						ReservasDTO reservaDTO = mapper.map(r, ReservasDTO.class);
+						reservas.add(reservaDTO);
+					}
+					
+					reservasPorUsuario.put(mapper.map(u, UsuariosDTO.class), reservas);
+				}
+			}
+			
+		} catch (ParseException e) {
+			return new ResponseEntity<>("Error: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<>(reservasPorUsuario, HttpStatus.OK);
+		
+	}
+	
+	@DeleteMapping(value = "/reservas/get-stock-materiales{idReserva}")
+	public ResponseEntity<Object> deleteReserva(@PathVariable Integer idReserva) {
+		var reserva = reservasServices.getReserva(idReserva);
+		if(reserva.isPresent()) {
+			reservasServices.deleteReserva(reserva.get());
+		}else {
+			return new ResponseEntity<>("Reserva no se pudo eliminar", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		return new ResponseEntity<>("Reserva eliminada successsfully", HttpStatus.OK);
+		
+	}
 	
 }

@@ -21,5 +21,7 @@ public class MaterialesDTO {
 	private int maximoPorDia;
 	@JsonProperty("observaciones")
 	private String observaciones;
+	@JsonProperty("es-defecto")
+	private boolean esDefecto;
 
 }

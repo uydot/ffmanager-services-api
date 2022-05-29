@@ -33,8 +33,18 @@ public class Materiales implements Serializable {
     private String observaciones;
     @OneToMany(mappedBy="materiales")
     private Set<MaterialesDeReserva> materialesDeReserva;
+    @Column(name="es_defecto", nullable=false, length=1)
+    private boolean esDefecto;
 
-    /** Default constructor. */
+    public boolean isEsDefecto() {
+		return esDefecto;
+	}
+
+	public void setEsDefecto(boolean esDefecto) {
+		this.esDefecto = esDefecto;
+	}
+
+	/** Default constructor. */
     public Materiales() {
         super();
     }

@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ import com.services.api.ffmanager.domain.entities.MaterialesDeReserva;
 import com.services.api.ffmanager.domain.entities.ReservaDeSector;
 import com.services.api.ffmanager.domain.entities.Reservas;
 import com.services.api.ffmanager.domain.entities.Sectores;
+import com.services.api.ffmanager.domain.entities.Usuarios;
 import com.services.api.ffmanager.domain.repository.ActividadesDeReservaRepository;
 import com.services.api.ffmanager.domain.repository.AreasRepository;
 import com.services.api.ffmanager.domain.repository.ComplejosRepository;
@@ -34,6 +36,7 @@ import com.services.api.ffmanager.domain.repository.MaterialesRepository;
 import com.services.api.ffmanager.domain.repository.ReservaDeSectorRepository;
 import com.services.api.ffmanager.domain.repository.ReservasRepository;
 import com.services.api.ffmanager.domain.repository.SectoresRepository;
+import com.services.api.ffmanager.domain.repository.UsuariosRepository;
 import com.services.api.ffmanager.utils.Utilities;
 
 @Service
@@ -49,6 +52,7 @@ public class ReservasServicesImpl implements ReservasServices {
 	AreasRepository areasRepository;
 	ComplejosRepository complejosRepository;
 	MaterialesRepository materialesRepository;
+	UsuariosRepository usuariosRepository;
 
 	@Autowired
 	public ReservasServicesImpl(SectoresRepository sectoresRepository, ReservasRepository reservasRepository,
@@ -57,7 +61,8 @@ public class ReservasServicesImpl implements ReservasServices {
 			ActividadesDeReservaRepository actividadesDeReservaRepository,
 			EstadosDeSectoresRepository estadoDeSectorRepository, EstadosRepository estadosRepository,
 			AreasRepository areasRepository, ComplejosRepository complejosRepository,
-			MaterialesRepository materialesRepository) {
+			MaterialesRepository materialesRepository,
+			UsuariosRepository usuariosRepository) {
 		this.reservasRepository = reservasRepository;
 		this.sectoresRepository = sectoresRepository;
 		this.reservaDeSectorRepository = reservaDeSectorRepository;
@@ -68,6 +73,7 @@ public class ReservasServicesImpl implements ReservasServices {
 		this.areasRepository = areasRepository;
 		this.complejosRepository = complejosRepository;
 		this.materialesRepository = materialesRepository;
+		this.usuariosRepository = usuariosRepository;
 	}
 
 	@Override
@@ -301,6 +307,26 @@ public class ReservasServicesImpl implements ReservasServices {
 	@Override
 	public Estados getEstadoReservado() {
 		return estadosRepository.getEstadoReservado();
+	}
+
+	@Override
+	public Set<Usuarios> geAlltUsuariosConReserva(LocalDateTime fechaDesde, LocalDateTime fechaHasta) {
+		return usuariosRepository.getAllUsuariosConReservas(fechaDesde, fechaHasta);
+	}
+
+	@Override
+	public boolean deleteReserva(Reservas reserva) {
+		try {
+			reservasRepository.delete(reserva);
+		} catch (Exception e) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public Optional<Reservas> getReserva(Integer idReserva) {
+		return reservasRepository.findById(idReserva);
 	}
 
 }

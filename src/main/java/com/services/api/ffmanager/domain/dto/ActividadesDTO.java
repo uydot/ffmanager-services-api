@@ -19,5 +19,7 @@ public class ActividadesDTO {
 	private String observaciones;
 	@JsonProperty("duracion")
 	private int duracion;
+	@JsonProperty("es-defecto")
+	private boolean esDefecto;
 
 }

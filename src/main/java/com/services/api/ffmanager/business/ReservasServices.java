@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 import com.services.api.ffmanager.domain.dto.StockMaterialDTO;
 import com.services.api.ffmanager.domain.entities.ActividadesDeReserva;
@@ -13,6 +15,7 @@ import com.services.api.ffmanager.domain.entities.MaterialesDeReserva;
 import com.services.api.ffmanager.domain.entities.ReservaDeSector;
 import com.services.api.ffmanager.domain.entities.Reservas;
 import com.services.api.ffmanager.domain.entities.Sectores;
+import com.services.api.ffmanager.domain.entities.Usuarios;
 
 public interface ReservasServices {
 
@@ -43,4 +46,10 @@ public interface ReservasServices {
 	public abstract  List<StockMaterialDTO> getStockMaterialesPorReserva(LocalDateTime fechaDesde,LocalDateTime fechaHasta);
 	
 	public abstract Estados getEstadoReservado();
+	
+	public abstract Set<Usuarios> geAlltUsuariosConReserva(LocalDateTime fechaDesde, LocalDateTime fechaHasta);
+	
+	public abstract boolean deleteReserva(Reservas reserva);
+	
+	public abstract Optional<Reservas> getReserva(Integer idReserva);
 }
