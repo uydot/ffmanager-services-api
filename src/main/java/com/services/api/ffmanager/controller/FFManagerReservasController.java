@@ -253,28 +253,43 @@ public class FFManagerReservasController {
 	}
 	
 	
-	@GetMapping(value = "/reservas/get-all-reservas-usuarios/{fechaDesde}/{fechaHasta}")
-	public ResponseEntity<Object> getAllReservasPorUsuario(@PathVariable("fechaDesde") String fechaDesde, @PathVariable("fechaHasta") String fechaHasta) {
+	@GetMapping(value = "/reservas/get-all-reservas-usuarios/{fechaDesde}/{fechaHasta}/{idUsuario}")
+	public ResponseEntity<Object> getAllReservasPorUsuario(@PathVariable("fechaDesde") String fechaDesde, @PathVariable("fechaHasta") String fechaHasta, @PathVariable("idUsuario") String idUsuario) {
 		Set<Usuarios> listaUsuariosConReserva = null;
 		HashMap<UsuariosDTO, List<ReservasDTO>> reservasPorUsuario = null;
 		List<ReservasDTO> reservas;
+		Usuarios usuario = null;
 		try {
-			listaUsuariosConReserva = 
-					reservasServices.geAlltUsuariosConReserva(Utilities.getDateTimeFromString(fechaDesde), Utilities.getDateTimeFromString(fechaHasta));
-			if(listaUsuariosConReserva != null && !listaUsuariosConReserva.isEmpty()){
-				
+			if(Integer.parseInt(idUsuario) != 0) {
 				reservasPorUsuario = new HashMap<UsuariosDTO, List<ReservasDTO>>();
+				usuario = reservasServices.geOneUsuarioConReservas(Utilities.getDateTimeFromString(fechaDesde), Utilities.getDateTimeFromString(fechaHasta), Integer.parseInt(idUsuario));
+				reservas = new ArrayList<ReservasDTO>();
+				for (Reservas r : usuario.getReservas()) {
+					ReservasDTO reservaDTO = mapper.map(r, ReservasDTO.class);
+					reservas.add(reservaDTO);
+				}
 				
-				for (Usuarios u : listaUsuariosConReserva) {
-					reservas = new ArrayList<ReservasDTO>();
-					for (Reservas r : u.getReservas()) {
-						ReservasDTO reservaDTO = mapper.map(r, ReservasDTO.class);
-						reservas.add(reservaDTO);
-					}
+				reservasPorUsuario.put(mapper.map(usuario, UsuariosDTO.class), reservas);
+			}
+			else {
+				listaUsuariosConReserva = 
+						reservasServices.geAllUsuariosConReservas(Utilities.getDateTimeFromString(fechaDesde), Utilities.getDateTimeFromString(fechaHasta));
+				if(listaUsuariosConReserva != null && !listaUsuariosConReserva.isEmpty()){
 					
-					reservasPorUsuario.put(mapper.map(u, UsuariosDTO.class), reservas);
+					reservasPorUsuario = new HashMap<UsuariosDTO, List<ReservasDTO>>();
+					
+					for (Usuarios u : listaUsuariosConReserva) {
+						reservas = new ArrayList<ReservasDTO>();
+						for (Reservas r : u.getReservas()) {
+							ReservasDTO reservaDTO = mapper.map(r, ReservasDTO.class);
+							reservas.add(reservaDTO);
+						}
+						
+						reservasPorUsuario.put(mapper.map(u, UsuariosDTO.class), reservas);
+					}
 				}
 			}
+			
 			
 		} catch (ParseException e) {
 			return new ResponseEntity<>("Error: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -283,7 +298,7 @@ public class FFManagerReservasController {
 		
 	}
 	
-	@DeleteMapping(value = "/reservas/get-stock-materiales{idReserva}")
+	@DeleteMapping(value = "/reservas/delete-reserva{idReserva}")
 	public ResponseEntity<Object> deleteReserva(@PathVariable Integer idReserva) {
 		var reserva = reservasServices.getReserva(idReserva);
 		if(reserva.isPresent()) {

@@ -47,7 +47,9 @@ public interface ReservasServices {
 	
 	public abstract Estados getEstadoReservado();
 	
-	public abstract Set<Usuarios> geAlltUsuariosConReserva(LocalDateTime fechaDesde, LocalDateTime fechaHasta);
+	public abstract Set<Usuarios> geAllUsuariosConReservas(LocalDateTime fechaDesde, LocalDateTime fechaHasta);
+	
+	public abstract Usuarios geOneUsuarioConReservas(LocalDateTime fechaDesde, LocalDateTime fechaHasta, Integer idUsuario);
 	
 	public abstract boolean deleteReserva(Reservas reserva);
 	

@@ -3,8 +3,6 @@
 package com.services.api.ffmanager.domain.entities;
 
 import java.io.Serializable;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,7 +11,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Version;
 
 @Entity(name="reserva_de_sector")
 public class ReservaDeSector implements Serializable {

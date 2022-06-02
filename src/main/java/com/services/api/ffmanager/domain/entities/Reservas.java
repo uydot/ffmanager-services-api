@@ -4,10 +4,9 @@ package com.services.api.ffmanager.domain.entities;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,7 +15,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.Version;
 
 @Entity(name="reservas")
 public class Reservas implements Serializable {
@@ -32,14 +30,14 @@ public class Reservas implements Serializable {
     private LocalDateTime fechaHasta;
 //    @OneToMany(mappedBy="reservas")
 //    private Set<ReservaDeArea> reservaDeArea;
-    @OneToMany(mappedBy="reservas")
+    @OneToMany(mappedBy="reservas", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ActividadesDeReserva> actividadesDeReserva;
-    @OneToMany(mappedBy="reservas")
+    @OneToMany(mappedBy="reservas", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<MaterialesDeReserva> materialesDeReserva;
     @ManyToOne(optional=false)
     @JoinColumn(name="fk_id_usuario", nullable=false)
     private Usuarios usuarios;
-    @OneToMany(mappedBy="reservas")
+    @OneToMany(mappedBy="reservas", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ReservaDeSector> reservaDeSector;
     @Column(name="usuario_reserva")
     private String usuarioReserva;

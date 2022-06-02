@@ -310,8 +310,12 @@ public class ReservasServicesImpl implements ReservasServices {
 	}
 
 	@Override
-	public Set<Usuarios> geAlltUsuariosConReserva(LocalDateTime fechaDesde, LocalDateTime fechaHasta) {
+	public Set<Usuarios> geAllUsuariosConReservas(LocalDateTime fechaDesde, LocalDateTime fechaHasta) {
 		return usuariosRepository.getAllUsuariosConReservas(fechaDesde, fechaHasta);
+	}
+	
+	public Usuarios geOneUsuarioConReservas(LocalDateTime fechaDesde, LocalDateTime fechaHasta, Integer idUsuario) {
+		return usuariosRepository.getOneUsuarioConReservas(fechaDesde, fechaHasta, idUsuario);
 	}
 
 	@Override
